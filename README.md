@@ -7,8 +7,9 @@
 
   <h3 align="center">Energetic Storage Reborn</h3>
 
-Energetic Storage Reborn is a plugin that is heavily inspired by a forge mod
-named [Applied Energistics 2](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2).
+Energetic Storage Reborn is a plugin that is heavily inspired by the forge mods
+named [Applied Energistics 2](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2)
+and [Refined Storage](https://www.curseforge.com/minecraft/mc-mods/refined-storage).
 If you don't know what Applied Energistics 2 is, it's a mod that allows the player to store large numbers of items,
 sometimes hundreds of thousands, in just a few blocks.
 
@@ -16,6 +17,8 @@ Energetic Storage Reborn is a complete recode for Minecraft 1.20.6 of the origin
 It is significantly more modern,
 designed exclusively for PaperMC, Java 21, Kotlin, and Minecraft 1.20.6+,
 utilizing the latest features the game has to offer.
+It is also designed to be more efficient and more user-friendly than the original while adding new features
+and improvements.
 
 If you run into any issues,
 [create a GitHub issue!](https://github.com/CoasterFreakDE/EnergeticStorage-Reborn/issues/new)
