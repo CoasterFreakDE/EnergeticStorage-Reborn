@@ -1,16 +1,15 @@
-package com.liamxsage.boilerplates.managers
+package com.liamxsage.energeticstorage.managers
 
 import com.google.common.reflect.ClassPath
-import com.liamxsage.boilerplates.PACKAGE_NAME
-import com.liamxsage.boilerplates.PaperBoilerplate
-import com.liamxsage.boilerplates.annotations.RegisterCommand
-import com.liamxsage.boilerplates.extensions.getLogger
-import com.liamxsage.boilerplates.extensions.sendMessagePrefixed
-import com.liamxsage.boilerplates.listeners.TemplateListener
+import com.liamxsage.energeticstorage.PACKAGE_NAME
+import com.liamxsage.energeticstorage.EnergeticStorage
+import com.liamxsage.energeticstorage.annotations.RegisterCommand
+import com.liamxsage.energeticstorage.extensions.getLogger
+import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
+import com.liamxsage.energeticstorage.listeners.ItemClickListener
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
-import org.bukkit.event.Listener
 import org.bukkit.permissions.Permission
 import org.bukkit.plugin.Plugin
 import kotlin.reflect.KClass
@@ -22,7 +21,7 @@ object RegisterManager {
 
     private fun <T : Any> loadClassesInPackage(packageName: String, clazzType: KClass<T>): List<KClass<out T>> {
         try {
-            val classLoader = PaperBoilerplate.instance.javaClass.classLoader
+            val classLoader = EnergeticStorage.instance.javaClass.classLoader
             val allClasses = ClassPath.from(classLoader).allClasses
             val classes = mutableListOf<KClass<out T>>()
             for (classInfo in allClasses) {
@@ -57,7 +56,7 @@ object RegisterManager {
         annotation: KClass<out Annotation>
     ): List<KClass<out Any>> {
         try {
-            val classLoader = PaperBoilerplate.instance.javaClass.classLoader
+            val classLoader = EnergeticStorage.instance.javaClass.classLoader
             val allClasses = ClassPath.from(classLoader).allClasses
             val classes = mutableListOf<KClass<out Any>>()
             for (classInfo in allClasses) {
@@ -92,7 +91,7 @@ object RegisterManager {
 
             constructor.isAccessible = true
 
-            val command: PluginCommand = constructor.newInstance(annotation.name, PaperBoilerplate.instance)
+            val command: PluginCommand = constructor.newInstance(annotation.name, EnergeticStorage.instance)
 
 
             command.aliases = annotation.aliases.toList()
@@ -115,7 +114,7 @@ object RegisterManager {
             command.tabCompleter = commandInstance as? org.bukkit.command.TabCompleter
 
 
-            Bukkit.getCommandMap().register(PaperBoilerplate.instance.name.lowercase(), command)
+            Bukkit.getCommandMap().register(EnergeticStorage.instance.name.lowercase(), command)
             Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
         }
 
@@ -128,13 +127,13 @@ object RegisterManager {
      */
     fun registerListeners() {
         val listenerClasses = listOf(
-            TemplateListener(),
+            ItemClickListener(),
             // Add more listeners here
         )
         var amountListeners = 0
         for (listener in listenerClasses) {
             try {
-                Bukkit.getPluginManager().registerEvents(listener, PaperBoilerplate.instance)
+                Bukkit.getPluginManager().registerEvents(listener, EnergeticStorage.instance)
                 amountListeners++
             } catch (e: Exception) {
                 logger.error("Exception while registering listener: ${listener.javaClass.simpleName}")

@@ -1,7 +1,7 @@
-package com.liamxsage.boilerplates.commands
+package com.liamxsage.energeticstorage.commands
 
-import com.liamxsage.boilerplates.annotations.RegisterCommand
-import com.liamxsage.boilerplates.extensions.sendMessagePrefixed
+import com.liamxsage.energeticstorage.annotations.RegisterCommand
+import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

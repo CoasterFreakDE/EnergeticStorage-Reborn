@@ -5,14 +5,15 @@ plugins {
 }
 
 group = "com.liamxsage.boilerplates"
-version = "2.0-SNAPSHOT"
+version = "2024.6.1"
 
 val minecraftVersion: String by project
 val slf4jVersion: String by project
 
 val exposedVersion: String by project
 val hikariCPVersion: String by project
-val dotenvKotlinVersion: String by project
+
+val kotlinxSerializationJsonVersion: String by project
 
 val fruxzAscendVersion: String by project
 val fruxzStackedVersion: String by project
@@ -29,13 +30,11 @@ repositories {
 val deliverDependencies = listOf(
     "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesCoreVersion",
     "org.jetbrains.kotlinx:kotlinx-collections-immutable:$kotlinxCollectionsImmutableVersion",
+    "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion",
     "com.google.code.gson:gson:$gsonVersion",
 
     "dev.fruxz:ascend:$fruxzAscendVersion",
     "dev.fruxz:stacked:$fruxzStackedVersion",
-
-    "io.github.cdimascio:dotenv-kotlin:$dotenvKotlinVersion", // - .env support
-
 
     "org.jetbrains.exposed:exposed-core:$exposedVersion",
     "org.jetbrains.exposed:exposed-dao:$exposedVersion",

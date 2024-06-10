@@ -1,4 +1,4 @@
-package com.liamxsage.boilerplates.annotations
+package com.liamxsage.energeticstorage.annotations
 
 import org.bukkit.permissions.PermissionDefault
 

@@ -1,4 +1,4 @@
-package com.liamxsage.boilerplates.extensions
+package com.liamxsage.energeticstorage.extensions
 
 import org.slf4j.LoggerFactory
 

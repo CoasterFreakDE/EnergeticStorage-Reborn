@@ -1,7 +1,16 @@
-name: PaperBoilerplate
-main: com.liamxsage.boilerplates.PaperBoilerplate
-version: 1.20.6
-description: "This is a template for a new plugin based on Paper and the new Minecraft API."
+name: EnergeticStorage
+main: com.liamxsage.energeticstorage.EnergeticStorage
+version: ${version}
+description: "EnergeticStorage is a plugin for managing energetic storage systems."
 author: "LiamXSage"
 api-version: "1.20"
-loader: com.liamxsage.boilerplates.DependencyLoader
+loader: com.liamxsage.energeticstorage.DependencyLoader
+
+dependencies:
+  server:
+    Multiverse-Core:
+      required: false
+      load: BEFORE
+    Lands:
+      required: false
+      load: BEFORE
