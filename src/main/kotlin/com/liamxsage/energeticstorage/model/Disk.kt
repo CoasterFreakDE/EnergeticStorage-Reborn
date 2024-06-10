@@ -2,6 +2,7 @@ package com.liamxsage.energeticstorage.model
 
 import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
+import com.liamxsage.energeticstorage.cache.DiskCache
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -11,11 +12,16 @@ import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
 @Serializable
-data class ESDrive(
-    @Contextual private val uuid: UUID = UUID.randomUUID(),
-    val size: DriveSize = DriveSize.SMALL,
-    private val items: MutableList<ESItem> = mutableListOf()
+data class Disk(
+    @Contextual val uuid: UUID = UUID.randomUUID(),
+    val size: DiskSize = DiskSize.SMALL,
+    val items: MutableList<ESItem> = mutableListOf(),
+    @Contextual var diskDriveUUID: UUID? = null
 ) : Cloneable {
+
+    init {
+        DiskCache.addDisk(this)
+    }
 
     /**
      * Creates an ItemStack representing the disk item for the ESDrive.

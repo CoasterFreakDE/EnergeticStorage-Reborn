@@ -1,38 +1,38 @@
 package com.liamxsage.energeticstorage.cache
 
-import com.liamxsage.energeticstorage.model.ESSystem
+import com.liamxsage.energeticstorage.model.DiskDrive
 import java.util.UUID
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-object SystemCache {
+object DiskDriveCache {
 
     private val cacheLock: ReadWriteLock = ReentrantReadWriteLock()
-    private var cache = mapOf<UUID, ESSystem>()
+    private var cache = mapOf<UUID, DiskDrive>()
 
-    fun getSystem(systemId: UUID): ESSystem? {
+    fun getDiskDriveByUUID(diskDriveUUID: UUID): DiskDrive? {
         cacheLock.readLock().lock()
-        val system = cache[systemId]
+        val system = cache[diskDriveUUID]
         cacheLock.readLock().unlock()
         return system
     }
 
-    fun addSystem(system: ESSystem) {
+    fun addDiskDrive(diskDrive: DiskDrive) {
         cacheLock.writeLock().lock()
-        cache = cache + (system.uuid to system)
+        cache = cache + (diskDrive.uuid to diskDrive)
         cacheLock.writeLock().unlock()
     }
 
-    fun removeSystem(systemId: UUID) {
+    fun removeDiskDrive(diskDriveUUID: UUID) {
         cacheLock.writeLock().lock()
-        cache = cache - systemId
+        cache = cache - diskDriveUUID
         cacheLock.writeLock().unlock()
     }
 
-    fun getSystems(): List<ESSystem> {
+    fun getDiskDrives(): List<DiskDrive> {
         cacheLock.readLock().lock()
-        val systems = cache.values.toList()
+        val diskDrives = cache.values.toList()
         cacheLock.readLock().unlock()
-        return systems
+        return diskDrives
     }
 }

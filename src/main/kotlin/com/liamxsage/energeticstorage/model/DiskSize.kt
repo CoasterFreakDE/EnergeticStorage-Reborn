@@ -2,7 +2,7 @@ package com.liamxsage.energeticstorage.model
 
 import com.liamxsage.energeticstorage.EnergeticStorage
 
-enum class DriveSize {
+enum class DiskSize {
     SMALL,
     MEDIUM,
     LARGE,

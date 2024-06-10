@@ -4,6 +4,7 @@ import com.google.common.reflect.ClassPath
 import com.liamxsage.energeticstorage.PACKAGE_NAME
 import com.liamxsage.energeticstorage.EnergeticStorage
 import com.liamxsage.energeticstorage.annotations.RegisterCommand
+import com.liamxsage.energeticstorage.customblockdata.BlockDataListener
 import com.liamxsage.energeticstorage.extensions.getLogger
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import com.liamxsage.energeticstorage.listeners.BlockBreakListener
@@ -133,7 +134,8 @@ object RegisterManager {
             ItemClickListener(),
             BlockBreakListener(),
             BlockPlaceListener(),
-            PlayerInteractListener()
+            PlayerInteractListener(),
+            BlockDataListener()
         )
         var amountListeners = 0
         for (listener in listenerClasses) {

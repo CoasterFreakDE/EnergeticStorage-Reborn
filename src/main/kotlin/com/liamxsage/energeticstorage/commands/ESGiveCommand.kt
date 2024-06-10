@@ -3,12 +3,10 @@ package com.liamxsage.energeticstorage.commands
 import com.liamxsage.energeticstorage.annotations.RegisterCommand
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import com.liamxsage.energeticstorage.extensions.sendSuccessSound
-import com.liamxsage.energeticstorage.extensions.toItemBuilder
-import com.liamxsage.energeticstorage.model.DriveSize
-import com.liamxsage.energeticstorage.model.ESDrive
-import com.liamxsage.energeticstorage.model.ESSystem
+import com.liamxsage.energeticstorage.model.DiskSize
+import com.liamxsage.energeticstorage.model.Disk
+import com.liamxsage.energeticstorage.model.DiskDrive
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -42,16 +40,16 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
 
         val itemStack = when (item) {
             "system" -> {
-                ESSystem().createSystemItem()
+                DiskDrive().createSystemItem()
             }
             else -> {
-                val driveSize = DriveSize.entries.find { it.diskName.lowercase(Locale.getDefault()) == item.replace("_", " ") }
-                if (driveSize == null) {
+                val diskSize = DiskSize.entries.find { it.diskName.lowercase(Locale.getDefault()) == item.replace("_", " ") }
+                if (diskSize == null) {
                     sender.sendMessagePrefixed("<red>Invalid drive size")
                     return true
                 }
 
-                ESDrive(size = driveSize).createDiskItem()
+                Disk(size = diskSize).createDiskItem()
             }
         }
 
@@ -65,7 +63,7 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
     override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String> {
         return when (args.size) {
             1 -> {
-                listOf("system", *DriveSize.entries.map { it.diskName.replace(" ", "_") }.toTypedArray())
+                listOf("system", *DiskSize.entries.map { it.diskName.replace(" ", "_") }.toTypedArray())
                     .filter { it.startsWith(args[0], ignoreCase = true)}
             }
             2 -> {

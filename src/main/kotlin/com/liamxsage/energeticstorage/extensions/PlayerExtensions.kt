@@ -40,3 +40,5 @@ fun Player.sendSuccessSound() = playSound(location, "minecraft:block.note_block.
 fun Player.sendTeleportSound() = playSound(location, "minecraft:block.note_block.harp", 1f, 1f)
 
 fun Player.sendOpenSound() = playSound(location, "minecraft:block.note_block.chime", 1f, 1f)
+
+fun Player.sendInfoSound() = playSound(location, "minecraft:block.note_block.bit", 1f, 1f)

@@ -29,7 +29,7 @@ class EnergeticStorage : JavaPlugin() {
      *
      * @see ItemStackAdapter
      */
-    private val gson = GsonBuilder()
+    val gson = GsonBuilder()
         .registerTypeAdapter(ItemStack::class.java, ItemStackAdapter())
         .registerTypeAdapter(UUID::class.java, UUIDAdapter())
         .registerTypeAdapter(Location::class.java, LocationAdapter())

@@ -70,7 +70,7 @@ internal object DatabaseConnection {
         getLogger().info("Check for table updates...")
         transaction {
             SchemaUtils.createMissingTablesAndColumns(
-
+                DiskTable
             )
         }
 

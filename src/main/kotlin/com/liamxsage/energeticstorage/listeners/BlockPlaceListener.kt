@@ -1,17 +1,15 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.SYSTEM_ID_NAMESPACE
-import com.liamxsage.energeticstorage.cache.SystemCache
-import com.liamxsage.energeticstorage.extensions.getKey
-import com.liamxsage.energeticstorage.extensions.hasKey
-import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
-import com.liamxsage.energeticstorage.items.StringMetadataValue
-import com.liamxsage.energeticstorage.model.ESSystem
+import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.extensions.*
+import com.liamxsage.energeticstorage.model.DiskDrive
 import org.bukkit.Material
 import org.bukkit.block.data.type.ChiseledBookshelf
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 class BlockPlaceListener : Listener {
@@ -19,19 +17,20 @@ class BlockPlaceListener : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onBlockPlace(event: BlockPlaceEvent): Unit = with(event) {
         if (block.type != Material.CHISELED_BOOKSHELF) return@with
-        if (!itemInHand.hasKey(SYSTEM_ID_NAMESPACE)) return@with
-        val systemUUID = itemInHand.getKey(SYSTEM_ID_NAMESPACE) ?: return@with
-        val system = SystemCache.getSystem(UUID.fromString(systemUUID)) ?: ESSystem(UUID.fromString(systemUUID))
+        if (!itemInHand.hasKey(DISK_DRIVE_ID_NAMESPACE)) return@with
+        val systemUUID = itemInHand.getKey(DISK_DRIVE_ID_NAMESPACE) ?: return@with
+        val system = DiskDriveCache.getDiskDriveByUUID(UUID.fromString(systemUUID)) ?: DiskDrive(UUID.fromString(systemUUID))
 
         val chiseledBookshelf = block.blockData as ChiseledBookshelf
-        val drives = system.drives.size
+        val drives = system.disks.size
         for (i in 0 until drives) {
             chiseledBookshelf.setSlotOccupied(i, true)
         }
+        block.blockData = chiseledBookshelf
+        block.persistentDataContainer[DISK_DRIVE_ID_NAMESPACE, PersistentDataType.STRING] = systemUUID
 
-        block.setMetadata(SYSTEM_ID_NAMESPACE.key, StringMetadataValue(systemUUID))
-
-        player.sendMessagePrefixed("Successfully placed system with ID $systemUUID.")
+        player.sendMessagePrefixed("Successfully placed ESSystem.")
+        player.sendSuccessSound()
     }
 
 }

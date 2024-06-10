@@ -1,8 +1,9 @@
 package com.liamxsage.energeticstorage.model
 
-import com.liamxsage.energeticstorage.SYSTEM_ID_NAMESPACE
+import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
-import com.liamxsage.energeticstorage.cache.SystemCache
+import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.database.loadDisks
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -12,13 +13,15 @@ import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
 @Serializable
-data class ESSystem(
+data class DiskDrive(
     @Contextual val uuid: UUID = UUID.randomUUID(),
-    val drives: MutableList<ESDrive> = mutableListOf()
+    val disks: MutableList<Disk> = mutableListOf()
 ) {
 
     init {
-        SystemCache.addSystem(this)
+        loadDisks()
+
+        DiskDriveCache.addDiskDrive(this)
     }
 
     /**
@@ -35,25 +38,27 @@ data class ESSystem(
         )
         setGlinting(true)
         customModelData(1)
-        addPersistentData(SYSTEM_ID_NAMESPACE, uuid.toString())
+        addPersistentData(DISK_DRIVE_ID_NAMESPACE, uuid.toString())
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 
+    val canFitDrive: Boolean
+        get() = disks.size < 6
 
-    private val totalItems: Long
-        get() = drives.sumOf { it.totalItems }
+    val totalItems: Long
+        get() = disks.sumOf { it.totalItems }
 
-    private val totalTypes: Int
-        get() = drives.sumOf { it.totalTypes }
+    val totalTypes: Int
+        get() = disks.sumOf { it.totalTypes }
 
     private val totalDrives: Int
-        get() = drives.size
+        get() = disks.size
 
-    private val totalSize: Long
-        get() = drives.sumOf { it.size.size }
+    val totalSize: Long
+        get() = disks.sumOf { it.size.size }
 
-    private val totalTypesSize: Int
-        get() = drives.sumOf { it.size.types }
+    val totalTypesSize: Int
+        get() = disks.sumOf { it.size.types }
 
     private val colorItems: String
         get() = when {
