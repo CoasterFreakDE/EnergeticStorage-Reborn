@@ -48,24 +48,58 @@ data class DiskDrive(
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 
+    /**
+     * Checks if a drive can fit in the available disk slots.
+     *
+     * @return true if there are less than 6 disks, false otherwise.
+     */
     val canFitDrive: Boolean
         get() = disks.size < 6
 
+    /**
+     * Represents the total number of items present in the disks of a DiskDrive.
+     *
+     * @return The total number of items.
+     */
     val totalItems: Long
         get() = disks.sumOf { it.totalItems }
 
+    /**
+     * Represents the total number of types of items stored in the disk drive.
+     *
+     * This variable is calculated by summing up the totalTypes property of each disk in the disks list.
+     *
+     * @see DiskDrive
+     * @see Disk
+     */
     val totalTypes: Int
         get() = disks.sumOf { it.totalTypes }
 
+    /**
+     * Represents the total number of disk drives in the system.
+     */
     private val totalDrives: Int
         get() = disks.size
 
+    /**
+     * Represents the total size of all disks in a disk drive.
+     *
+     * @property totalSize The total size of all disks.
+     */
     val totalSize: Long
         get() = disks.sumOf { it.size.size }
 
+    /**
+     *
+     */
     val totalTypesSize: Int
         get() = disks.sumOf { it.size.types }
 
+    /**
+     * Represents a string that contains color-coded items information.
+     * The color code is specified in the form of hexadecimal color values.
+     * The value of this variable is determined based on the `totalItems` and `totalSize` properties.
+     */
     private val colorItems: String
         get() = when {
             totalItems > ((totalSize / 10) * 8) -> "<color:#fc5c65>$totalItems</color>"
@@ -73,6 +107,9 @@ data class DiskDrive(
             else -> "<color:#b8e994>$totalItems</color>"
         }
 
+    /**
+     * The color representation of the total types.
+     */
     private val colorTypes: String
         get() = when {
             totalTypes > ((totalTypesSize / 10) * 8) -> "<color:#fc5c65>$totalTypes</color>"
