@@ -27,7 +27,7 @@ If you run into any issues,
 
 ## Features:
 * [ ] Networking
-  * [ ] Pipes (Data Transmissions)
+  * [x] Cables (Data Transmissions)
   * [ ] Network Cores
   * [x] DiskDrives
   * [x] Disks

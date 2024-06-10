@@ -44,8 +44,13 @@ fun Player.sendOpenSound() = playSound(location, "minecraft:block.note_block.chi
 
 fun Player.sendInfoSound() = playSound(location, "minecraft:block.note_block.bit", 1f, 1f)
 
+fun Player.sendRemoveDiskSound() = playSound(location, Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 1f, 1f)
+
+fun Player.sendInsertDiskSound() = playSound(location, Sound.ENTITY_ITEM_FRAME_ADD_ITEM, 1f, 1f)
+
 var Player.isESDebugModeEnabled: Boolean
-    get() = persistentDataContainer.has(PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN)
+    get() = persistentDataContainer.has(PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN) &&
+            persistentDataContainer[PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN] == true
     set(value) {
         persistentDataContainer[PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN] = value
     }

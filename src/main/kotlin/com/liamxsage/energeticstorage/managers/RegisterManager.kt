@@ -7,6 +7,7 @@ import com.liamxsage.energeticstorage.annotations.RegisterCommand
 import com.liamxsage.energeticstorage.customblockdata.BlockDataListener
 import com.liamxsage.energeticstorage.extensions.getLogger
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
+import com.liamxsage.energeticstorage.gui.DiskDriveGui
 import com.liamxsage.energeticstorage.listeners.BlockBreakListener
 import com.liamxsage.energeticstorage.listeners.BlockPlaceListener
 import com.liamxsage.energeticstorage.listeners.ItemClickListener
@@ -135,7 +136,8 @@ object RegisterManager {
             BlockBreakListener(),
             BlockPlaceListener(),
             PlayerInteractListener(),
-            BlockDataListener()
+            BlockDataListener(),
+            DiskDriveGui()
         )
         var amountListeners = 0
         for (listener in listenerClasses) {

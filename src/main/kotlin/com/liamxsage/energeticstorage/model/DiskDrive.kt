@@ -10,6 +10,8 @@ import com.liamxsage.energeticstorage.network.NetworkInterface
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.block.data.type.ChiseledBookshelf
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -77,4 +79,19 @@ data class DiskDrive(
             totalTypes > (totalTypesSize / 2) -> "<color:#fed330>$totalTypes</color>"
             else -> "<color:#b8e994>$totalTypes</color>"
         }
+
+    /**
+     * Updates the given block by setting the occupied slots of the ChiseledBookshelf block data.
+     *
+     * @param block The block to update.
+     */
+    fun updateBlock(block: Block) {
+        val chiseledBookshelf = block.blockData as ChiseledBookshelf
+        val drives = disks.size
+        for (i in 0 until 6) {
+            chiseledBookshelf.setSlotOccupied(i, drives > i)
+        }
+        block.blockData = chiseledBookshelf
+        block.state.update(true)
+    }
 }

@@ -6,6 +6,7 @@ import com.liamxsage.energeticstorage.cache.DiskCache
 import com.liamxsage.energeticstorage.cache.DiskDriveCache
 import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.*
+import com.liamxsage.energeticstorage.gui.DiskDriveGui
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
 import com.liamxsage.energeticstorage.network.getConnectedNetworkInterfaces
@@ -56,6 +57,7 @@ class PlayerInteractListener : Listener {
         interfacesSummedByType.forEach { (type, amount) ->
             player.sendMessagePrefixed("${type.simpleName}: $amount")
         }
+        player.sendInfoSound()
     }
 
     private fun handleDiskDriveInteraction(block: Block, item: ItemStack?, player: Player) {
@@ -83,23 +85,19 @@ class PlayerInteractListener : Listener {
             if (item.amount == 1) player.inventory.removeItem(item)
             else item.amount = item.amount.minus(1)
             DiskDriveCache.addDiskDrive(diskDrive)
-
-            val chiseledBookshelf = block!!.blockData as ChiseledBookshelf
-            val drives = diskDrive.disks.size
-            for (i in 0 until drives) {
-                chiseledBookshelf.setSlotOccupied(i, true)
-            }
-            block.blockData = chiseledBookshelf
+            diskDrive.updateBlock(block)
 
             player.sendMessagePrefixed("Successfully inserted drive.")
             player.sendSuccessSound()
             return
         }
 
+        DiskDriveGui.instance.openInventory(player, diskDrive, block)
+
+        if (!player.isESDebugModeEnabled) return
 
         player.sendMessagePrefixed("Drives inserted: ${diskDrive.disks.size}/6")
         player.sendMessagePrefixed("Filled Items: ${diskDrive.totalItems}/${diskDrive.totalSize}")
         player.sendMessagePrefixed("Filled Types: ${diskDrive.totalTypes}/${diskDrive.totalTypesSize}")
-        player.sendInfoSound()
     }
 }
