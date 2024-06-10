@@ -18,10 +18,13 @@ drives:
     types: 512
 
 storage:
-  # The storage type to use. Options: "mysql", "mariadb"
-  type: "mariadb"
+  # The storage type to use. Options: "mysql", "mariadb", "sqlite", "postgresql", "h2"
+  # I highly recommend using MySQL/MariaDB or PostgreSQL for production environments.
+  type: "sqlite"
+  database: "energeticstorage.db"
+
+  # MySQL/MariaDB/PostgreSQL configuration
   host: "localhost"
   port: 3306
-  database: "energeticstorage"
   username: "root"
   password: "password"

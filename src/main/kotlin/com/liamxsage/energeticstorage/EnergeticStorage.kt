@@ -1,6 +1,7 @@
 package com.liamxsage.energeticstorage
 
 import com.google.gson.GsonBuilder
+import com.liamxsage.energeticstorage.database.DatabaseConnection
 import com.liamxsage.energeticstorage.managers.RegisterManager
 import com.liamxsage.energeticstorage.serialization.ItemStackAdapter
 import com.liamxsage.energeticstorage.serialization.LocationAdapter
@@ -42,6 +43,7 @@ class EnergeticStorage : JavaPlugin() {
         // Plugin startup logic
         saveDefaultConfig()
 
+        DatabaseConnection.connect()
 
         val time = measureTimeMillis {
             RegisterManager.registerCommands()
@@ -49,5 +51,12 @@ class EnergeticStorage : JavaPlugin() {
         }
         logger.info("Plugin enabled in $time ms")
         logger.info("EnergeticStorage is now tweaking your item storage behavior!")
+    }
+
+    override fun onDisable() {
+        // Plugin shutdown logic
+        DatabaseConnection.disconnect()
+
+        logger.info("EnergeticStorage is now shutting down.")
     }
 }

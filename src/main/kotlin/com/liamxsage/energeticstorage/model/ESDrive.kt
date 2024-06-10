@@ -13,7 +13,7 @@ import java.util.UUID
 @Serializable
 data class ESDrive(
     @Contextual private val uuid: UUID = UUID.randomUUID(),
-    private val size: DriveSize = DriveSize.SMALL,
+    val size: DriveSize = DriveSize.SMALL,
     private val items: MutableList<ESItem> = mutableListOf()
 ) : Cloneable {
 
@@ -34,10 +34,10 @@ data class ESDrive(
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 
-    private val totalItems: Long
+    val totalItems: Long
         get() = items.sumOf { it.amount }
 
-    private val totalTypes: Int
+    val totalTypes: Int
         get() = items.size
 
     private val colorItems: String
@@ -53,4 +53,16 @@ data class ESDrive(
             totalTypes > (size.types / 2) -> "<color:#fed330>$totalTypes</color>"
             else -> "<color:#b8e994>$totalTypes</color>"
         }
+
+    val isFull: Boolean
+        get() = totalItems >= size.size
+
+    val percentageFull: Double
+        get() = totalItems.toDouble() / size.size.toDouble()
+
+    val isTypeFull: Boolean
+        get() = totalTypes >= size.types
+
+    val percentageTypeFull: Double
+        get() = totalTypes.toDouble() / size.types.toDouble()
 }

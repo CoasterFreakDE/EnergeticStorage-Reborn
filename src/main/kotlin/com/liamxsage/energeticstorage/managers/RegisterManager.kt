@@ -6,7 +6,10 @@ import com.liamxsage.energeticstorage.EnergeticStorage
 import com.liamxsage.energeticstorage.annotations.RegisterCommand
 import com.liamxsage.energeticstorage.extensions.getLogger
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
+import com.liamxsage.energeticstorage.listeners.BlockBreakListener
+import com.liamxsage.energeticstorage.listeners.BlockPlaceListener
 import com.liamxsage.energeticstorage.listeners.ItemClickListener
+import com.liamxsage.energeticstorage.listeners.PlayerInteractListener
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
@@ -128,7 +131,9 @@ object RegisterManager {
     fun registerListeners() {
         val listenerClasses = listOf(
             ItemClickListener(),
-            // Add more listeners here
+            BlockBreakListener(),
+            BlockPlaceListener(),
+            PlayerInteractListener()
         )
         var amountListeners = 0
         for (listener in listenerClasses) {

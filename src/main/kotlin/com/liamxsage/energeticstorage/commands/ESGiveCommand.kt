@@ -6,6 +6,7 @@ import com.liamxsage.energeticstorage.extensions.sendSuccessSound
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import com.liamxsage.energeticstorage.model.DriveSize
 import com.liamxsage.energeticstorage.model.ESDrive
+import com.liamxsage.energeticstorage.model.ESSystem
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -41,10 +42,7 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
 
         val itemStack = when (item) {
             "system" -> {
-                // Todo: Implement ESSystem
-                Material.NOTE_BLOCK.toItemBuilder {
-                    display("System")
-                }.build()
+                ESSystem().createSystemItem()
             }
             else -> {
                 val driveSize = DriveSize.entries.find { it.diskName.lowercase(Locale.getDefault()) == item.replace("_", " ") }

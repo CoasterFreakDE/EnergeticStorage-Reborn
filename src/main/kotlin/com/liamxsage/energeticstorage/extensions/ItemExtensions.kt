@@ -3,6 +3,8 @@ package com.liamxsage.energeticstorage.extensions
 import com.liamxsage.energeticstorage.items.ItemBuilder
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import org.bukkit.NamespacedKey
+import org.bukkit.persistence.PersistentDataType
 
 /**
  * Converts a Material to an ItemBuilder and applies the provided DSL.
@@ -27,4 +29,23 @@ fun ItemStack.toItemBuilder(dsl: ItemBuilder.() -> Unit = {}): ItemBuilder {
     builder.itemStack = this
     builder.dsl()
     return builder
+}
+
+
+fun Material.asQuantity(amount: Int): ItemStack {
+    return ItemStack(this, amount)
+}
+
+fun ItemStack.hasKey(namespacedKey: NamespacedKey): Boolean {
+    return this.itemMeta?.persistentDataContainer?.has(
+        namespacedKey,
+        PersistentDataType.STRING
+    ) ?: false
+}
+
+fun ItemStack.getKey(namespacedKey: NamespacedKey): String? {
+    return this.itemMeta?.persistentDataContainer?.get(
+        namespacedKey,
+        PersistentDataType.STRING
+    )
 }

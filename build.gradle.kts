@@ -13,6 +13,12 @@ val slf4jVersion: String by project
 val exposedVersion: String by project
 val hikariCPVersion: String by project
 
+val mysqlVersion: String by project
+val mariaDBVersion: String by project
+val sqliteVersion: String by project
+val postgresqlVersion: String by project
+val h2Version: String by project
+
 val kotlinxSerializationJsonVersion: String by project
 
 val fruxzAscendVersion: String by project
@@ -41,6 +47,13 @@ val deliverDependencies = listOf(
     "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
     "org.jetbrains.exposed:exposed-java-time:$exposedVersion",
     "com.zaxxer:HikariCP:$hikariCPVersion",
+
+    // Driver for MySQL, MariaDB, Postgresql, H2 and SQLite
+    "org.mariadb.jdbc:mariadb-java-client:$mariaDBVersion",
+    "com.mysql:mysql-connector-j:$mysqlVersion",
+    "org.xerial:sqlite-jdbc:$sqliteVersion",
+    "org.postgresql:postgresql:$postgresqlVersion",
+    "com.h2database:h2:$h2Version",
 
     "org.slf4j:slf4j-api:$slf4jVersion",
 )
