@@ -26,17 +26,26 @@ If you run into any issues,
 ---
 
 ## Features:
-* [ ] Hopper Input
-* [ ] Terminal Sorting
+* [ ] Networking
+  * [ ] Pipes (Data Transmissions)
+  * [ ] Network Cores
+  * [x] DiskDrives
+  * [x] Disks
+  * [ ] Terminals
+    * [ ] Terminal Sorting
+  * [ ] Importer
+    * [ ] Hopper Input
+  * [ ] Exporter
 * [ ] Player/Region Whitelist
   * [ ] Lands Integration
-* [ ] Support for 1.20.6
+* [x] Support for 1.20.6
+
 
 
 ## Items And Blocks:
 * 1k, 4k, 16k, and 64k, drives
   * The drives are needed to store items. 1k can store 1024 items, 4k can store 4096 and so on (1024 * how many thousand).
-  * All drives have a type limit set at 32, 64, 128 or 256. This means that only this amount of different item types can be added to a single drive.
+  * All drives have a type limit set at 64, 128, 256 or 512. This means that only this amount of different item types can be added to a single drive.
     * Can be changed in config.
 * ES System
     * The ES System is what keeps the drives inside it and is used to access the items stored on the drives.
@@ -58,7 +67,7 @@ If you run into any issues,
 
 ## Commands
 * /esreload
-* /esgive [drive/system] [1k, 4k, 16k, 64k] (player)
+* /esgive [1k, 4k, 16k, 64k, system] (player)
 
 ## Config:
 Config.yml:
