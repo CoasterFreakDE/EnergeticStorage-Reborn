@@ -40,6 +40,9 @@ class EnergeticStorage : JavaPlugin() {
 
     override fun onEnable() {
         // Plugin startup logic
+        saveDefaultConfig()
+
+
         val time = measureTimeMillis {
             RegisterManager.registerCommands()
             RegisterManager.registerListeners()

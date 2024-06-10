@@ -6,6 +6,7 @@ import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.Material
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
@@ -30,6 +31,7 @@ data class ESDrive(
         setGlinting(true)
         customModelData(size.ordinal + 1)
         addPersistentData(DISK_ID_NAMESPACE, uuid.toString())
+        flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 
     private val totalItems: Long

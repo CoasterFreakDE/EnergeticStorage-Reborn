@@ -1,3 +1,3 @@
 
-rootProject.name = "PaperMC-Plugin-Boilerplate"
+rootProject.name = "EnergeticStorage-Reborn"
 

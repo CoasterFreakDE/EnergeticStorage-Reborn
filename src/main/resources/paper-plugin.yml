@@ -1,4 +1,4 @@
-name: EnergeticStorage
+name: EnergeticStorageReborn
 main: com.liamxsage.energeticstorage.EnergeticStorage
 version: ${version}
 description: "EnergeticStorage is a plugin for managing energetic storage systems."
