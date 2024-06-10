@@ -43,6 +43,9 @@ class EnergeticStorage : JavaPlugin() {
         // Plugin startup logic
         saveDefaultConfig()
 
+        MAX_NETWORK_LENGTH = config.getInt("networks.maxLength", 128)
+        logger.info("Max network length set to $MAX_NETWORK_LENGTH")
+
         DatabaseConnection.connect()
 
         val time = measureTimeMillis {

@@ -17,6 +17,9 @@ drives:
     items: 65536
     types: 512
 
+networks:
+  maxLength: 128 # The maximum length of the network (connected blocks)
+
 storage:
   # The storage type to use. Options: "mysql", "mariadb", "sqlite", "postgresql", "h2"
   # I highly recommend using MySQL/MariaDB or PostgreSQL for production environments.

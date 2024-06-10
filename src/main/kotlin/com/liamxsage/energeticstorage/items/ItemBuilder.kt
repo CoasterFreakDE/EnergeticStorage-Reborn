@@ -96,13 +96,13 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      * @param value The value of the persistent data.
      * @return The updated ItemBuilder instance.
      */
-    fun <T : Any> addPersistentData(
+    fun <T : Any, I: Any> addPersistentData(
         key: NamespacedKey,
-        persistentDataType: PersistentDataType<T, T>,
-        value: T
+        persistentDataType: PersistentDataType<T, I>,
+        value: I
     ): ItemBuilder {
         val meta = itemStack.itemMeta
-        meta.persistentDataContainer.set(key, persistentDataType, value)
+        meta.persistentDataContainer[key, persistentDataType] = value
         itemStack.itemMeta = meta
         return this
     }

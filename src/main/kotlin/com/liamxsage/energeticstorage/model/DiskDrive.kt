@@ -1,22 +1,25 @@
 package com.liamxsage.energeticstorage.model
 
 import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
 import com.liamxsage.energeticstorage.cache.DiskDriveCache
 import com.liamxsage.energeticstorage.database.loadDisks
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
+import com.liamxsage.energeticstorage.network.NetworkInterface
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 @Serializable
 data class DiskDrive(
     @Contextual val uuid: UUID = UUID.randomUUID(),
     val disks: MutableList<Disk> = mutableListOf()
-) {
+) : NetworkInterface {
 
     init {
         loadDisks()
@@ -29,7 +32,7 @@ data class DiskDrive(
      *
      * @return The created system item.
      */
-    fun createSystemItem(): ItemStack = Material.CHISELED_BOOKSHELF.toItemBuilder {
+    fun createDiskDriveItem(): ItemStack = Material.CHISELED_BOOKSHELF.toItemBuilder {
         display("${TEXT_GRAY}Energetic Storage System")
         lore(
             "${TEXT_GRAY}Drives inserted: <color:#b8e994>${totalDrives}</color>/<color:#26de81>6</color>",
@@ -39,6 +42,7 @@ data class DiskDrive(
         setGlinting(true)
         customModelData(1)
         addPersistentData(DISK_DRIVE_ID_NAMESPACE, uuid.toString())
+        addPersistentData(NETWORK_INTERFACE_NAMESPACE, PersistentDataType.BOOLEAN, true)
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 

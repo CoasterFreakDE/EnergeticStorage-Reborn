@@ -1,9 +1,11 @@
 package com.liamxsage.energeticstorage.extensions
 
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
 import com.liamxsage.energeticstorage.items.ItemBuilder
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
 import org.bukkit.persistence.PersistentDataType
 
 /**
@@ -37,15 +39,26 @@ fun Material.asQuantity(amount: Int): ItemStack {
 }
 
 fun ItemStack.hasKey(namespacedKey: NamespacedKey): Boolean {
+    return this.hasKey(namespacedKey, PersistentDataType.STRING)
+}
+
+fun <T, I> ItemStack.hasKey(namespacedKey: NamespacedKey, persistentDataType: PersistentDataType<T, I>): Boolean {
     return this.itemMeta?.persistentDataContainer?.has(
         namespacedKey,
-        PersistentDataType.STRING
+        persistentDataType
     ) ?: false
 }
 
 fun ItemStack.getKey(namespacedKey: NamespacedKey): String? {
+    return this.getKey(namespacedKey, PersistentDataType.STRING)
+}
+
+fun <T, I> ItemStack.getKey(namespacedKey: NamespacedKey, persistentDataType: PersistentDataType<T, I>): I? {
     return this.itemMeta?.persistentDataContainer?.get(
         namespacedKey,
-        PersistentDataType.STRING
+        persistentDataType
     )
 }
+
+val ItemStack.isNetworkInterface: Boolean
+    get() = hasKey(NETWORK_INTERFACE_NAMESPACE, PersistentDataType.BOOLEAN)
