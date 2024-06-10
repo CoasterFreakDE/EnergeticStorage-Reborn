@@ -38,13 +38,17 @@ class PlayerInteractListener : Listener {
             return@with
         }
 
-        if (networkInterfaceType == NetworkInterfaceType.DISK_DRIVE) {
-            handleDiskDriveInteraction(block, player.inventory.itemInMainHand, player)
+        when(networkInterfaceType) {
+            NetworkInterfaceType.DISK_DRIVE -> handleDiskDriveInteraction(block, player.inventory.itemInMainHand, player)
+            NetworkInterfaceType.TERMINAL -> player.sendMessagePrefixed("Terminal")
+            else -> { /* Do nothing */ }
         }
 
+        if (!player.isESDebugModeEnabled) return@with
+
+        // The following code is only for debugging purposes
         val connectedInterfaced = getConnectedNetworkInterfaces(clickedBlock!!)
         val interfacesSummedByType = connectedInterfaced.values.groupBy { it::class.java }.mapValues { it.value.size }
-
         player.sendMessagePrefixed("Clicked Network Interface: <green>${
             networkInterfaceType.name.lowercase(Locale.getDefault())
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}")

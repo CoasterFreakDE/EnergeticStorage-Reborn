@@ -1,11 +1,13 @@
 package com.liamxsage.energeticstorage.extensions
 
 import com.liamxsage.energeticstorage.BLOCK_PREFIX
+import com.liamxsage.energeticstorage.PLAYER_DEBUG_MODE_NAMESPACE
 import com.liamxsage.energeticstorage.PREFIX
 import dev.fruxz.stacked.text
 import org.bukkit.*
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.persistence.PersistentDataType
 
 
 fun Player.sendMessagePrefixed(message: String) {
@@ -32,7 +34,6 @@ fun Player.soundExecution() {
     playSound(location, Sound.ITEM_ARMOR_EQUIP_CHAIN, .1F, 2F)
 }
 
-
 fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
 
 fun Player.sendSuccessSound() = playSound(location, "minecraft:block.note_block.pling", 1f, 1f)
@@ -42,3 +43,9 @@ fun Player.sendTeleportSound() = playSound(location, "minecraft:block.note_block
 fun Player.sendOpenSound() = playSound(location, "minecraft:block.note_block.chime", 1f, 1f)
 
 fun Player.sendInfoSound() = playSound(location, "minecraft:block.note_block.bit", 1f, 1f)
+
+var Player.isESDebugModeEnabled: Boolean
+    get() = persistentDataContainer.has(PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN)
+    set(value) {
+        persistentDataContainer[PLAYER_DEBUG_MODE_NAMESPACE, PersistentDataType.BOOLEAN] = value
+    }
