@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.0.0"
     id("io.papermc.paperweight.userdev") version "1.7.1"
     kotlin("plugin.serialization") version "2.0.0"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "com.liamxsage.boilerplates"
@@ -116,5 +117,12 @@ kotlin {
                 "-opt-in=kotlin.RequiresOptIn"
             )
         )
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "CoasterFreakDE_EnergeticStorage-Reborn_0578cff5-4b77-4f9d-8781-196fb92f58c7")
+        property("sonar.projectName", "EnergeticStorage-Reborn")
     }
 }
