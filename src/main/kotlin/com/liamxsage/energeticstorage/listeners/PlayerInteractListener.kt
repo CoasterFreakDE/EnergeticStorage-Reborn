@@ -1,7 +1,7 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
 import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
 import com.liamxsage.energeticstorage.cache.DiskCache
 import com.liamxsage.energeticstorage.cache.DiskDriveCache
 import com.liamxsage.energeticstorage.database.saveToDB
@@ -13,7 +13,6 @@ import com.liamxsage.energeticstorage.network.getConnectedNetworkInterfaces
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
 import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.block.data.type.ChiseledBookshelf
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

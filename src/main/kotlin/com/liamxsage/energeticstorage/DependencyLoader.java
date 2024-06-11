@@ -25,7 +25,6 @@ public class DependencyLoader implements PluginLoader {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(".dependencies"))))) {
             reader.lines().forEach(dependency -> {
-                LOGGER.log(Level.INFO, "Adding dependency: " + dependency);
                 maven.addDependency(new Dependency(new DefaultArtifact(dependency), null));
             });
 

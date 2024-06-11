@@ -12,6 +12,9 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 
+private const val UNABLE_TO_SAVE_ITEM_STACKS = "Unable to save item stacks."
+private const val UNABLE_TO_DECODE_CLASS_TYPE = "Unable to decode class type."
+
 object ItemStackConverter {
 
 
@@ -61,7 +64,7 @@ object ItemStackConverter {
             dataOutput.close()
             Base64Coder.encodeLines(outputStream.toByteArray())
         } catch (e: Exception) {
-            throw IllegalStateException("Unable to save item stacks.", e)
+            throw IllegalStateException(UNABLE_TO_SAVE_ITEM_STACKS, e)
         }
     }
 
@@ -92,7 +95,7 @@ object ItemStackConverter {
             dataOutput.close()
             Base64Coder.encodeLines(outputStream.toByteArray())
         } catch (e: Exception) {
-            throw IllegalStateException("Unable to save item stacks.", e)
+            throw IllegalStateException(UNABLE_TO_SAVE_ITEM_STACKS, e)
         }
     }
 
@@ -129,7 +132,7 @@ object ItemStackConverter {
             dataOutput.close()
             Base64Coder.encodeLines(outputStream.toByteArray())
         } catch (e: Exception) {
-            throw IllegalStateException("Unable to save item stacks.", e)
+            throw IllegalStateException(UNABLE_TO_SAVE_ITEM_STACKS, e)
         }
     }
 
@@ -168,7 +171,7 @@ object ItemStackConverter {
             dataInput.close()
             inventory
         } catch (e: ClassNotFoundException) {
-            throw IOException("Unable to decode class type.", e)
+            throw IOException(UNABLE_TO_DECODE_CLASS_TYPE, e)
         }
     }
 
@@ -198,7 +201,7 @@ object ItemStackConverter {
             dataInput.close()
             items
         } catch (e: ClassNotFoundException) {
-            throw IOException("Unable to decode class type.", e)
+            throw IOException(UNABLE_TO_DECODE_CLASS_TYPE, e)
         }
     }
 
@@ -227,7 +230,7 @@ object ItemStackConverter {
             dataInput.close()
             item
         } catch (e: ClassNotFoundException) {
-            throw IOException("Unable to decode class type.", e)
+            throw IOException(UNABLE_TO_DECODE_CLASS_TYPE, e)
         }
     }
 

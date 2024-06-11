@@ -154,8 +154,8 @@ internal class BlockDataListener : Listener {
         fun <K, V> reverse(map: Map<K, V>): Map<K, V> {
             val reversed = LinkedHashMap<K, V>()
             val keys = ArrayList(map.keys)
-            Collections.reverse(keys)
-            keys.forEach { key -> reversed[key] = map[key]!! }
+            keys.reverse()
+            keys.forEach { key -> reversed[key] = map[key] ?: error("Key not found") }
             return reversed
         }
     }

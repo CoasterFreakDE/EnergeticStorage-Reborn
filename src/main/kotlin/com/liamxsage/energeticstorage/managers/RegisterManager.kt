@@ -12,6 +12,7 @@ import com.liamxsage.energeticstorage.listeners.BlockBreakListener
 import com.liamxsage.energeticstorage.listeners.BlockPlaceListener
 import com.liamxsage.energeticstorage.listeners.ItemClickListener
 import com.liamxsage.energeticstorage.listeners.PlayerInteractListener
+import dev.fruxz.ascend.extension.forceCastOrNull
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
@@ -35,7 +36,7 @@ object RegisterManager {
                     try {
                         val loadedClass = classInfo.load().kotlin
                         if (clazzType.isInstance(loadedClass.javaObjectType.getDeclaredConstructor().newInstance())) {
-                            classes.add(loadedClass as KClass<out T>)
+                            classes.add(loadedClass.forceCastOrNull<KClass<out T>>() ?: continue)
                         }
                     } catch (_: Exception) {
                         // Ignore

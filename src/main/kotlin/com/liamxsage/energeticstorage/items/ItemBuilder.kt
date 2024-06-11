@@ -7,6 +7,7 @@ import com.liamxsage.energeticstorage.items.mineskin.SkinTexture
 import com.liamxsage.energeticstorage.listeners.ItemClickListener
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import dev.fruxz.ascend.extension.forceCastOrNull
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.stacked.text
 import net.kyori.adventure.text.Component
@@ -68,7 +69,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      * @return The updated ItemBuilder instance.
      */
     fun <T : ItemMeta> meta(dsl: T.() -> Unit): ItemBuilder {
-        val meta = itemStack.itemMeta as T // TODO <- forceCastOrNull() please! :)
+        val meta = itemStack.itemMeta.forceCastOrNull<T>() ?: return this
         dsl.invoke(meta)
         itemStack.itemMeta = meta
         return this
@@ -83,7 +84,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      */
     fun addPersistentData(key: NamespacedKey, value: String): ItemBuilder {
         val meta = itemStack.itemMeta
-        meta.persistentDataContainer.set(key, PersistentDataType.STRING, value)
+        meta.persistentDataContainer[key, PersistentDataType.STRING] = value
         itemStack.itemMeta = meta
         return this
     }
@@ -118,7 +119,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
     fun addPersistentDataIf(key: NamespacedKey, value: String, condition: Boolean = false): ItemBuilder {
         if (condition) {
             val meta = itemStack.itemMeta
-            meta.persistentDataContainer.set(key, PersistentDataType.STRING, value)
+            meta.persistentDataContainer[key, PersistentDataType.STRING] = value
             itemStack.itemMeta = meta
             return this
         }
@@ -160,7 +161,6 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      *
      * @param T the type of the item to perform the operation on
      */
-    @FunctionalInterface
     fun interface Performer<T> {
         fun perform(itemBuilder: T): T
     }
@@ -201,11 +201,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      * @return The updated ItemBuilder object.
      */
     fun setOwner(uuid: UUID): ItemBuilder {
-        if (itemStack.type != Material.PLAYER_HEAD) return this
-        val skullMeta = itemStack.itemMeta as SkullMeta
-        skullMeta.owningPlayer = Bukkit.getOfflinePlayer(uuid)
-        itemStack.itemMeta = skullMeta
-        return this
+        return owner(uuid)
     }
 
     /**
@@ -271,7 +267,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
             val skullMeta = itemStack.itemMeta as SkullMeta
             val profileField: Field = skullMeta.javaClass.getDeclaredField("profile")
             profileField.isAccessible = true
-            profileField.set(skullMeta, profile)
+            profileField[skullMeta] = profile
             itemStack.setItemMeta(skullMeta)
         } catch (e1: NoSuchFieldException) {
             e1.printStackTrace()
@@ -291,7 +287,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      */
     fun textureFromMineSkin(mineSkinUUID: String): ItemBuilder {
         if (textureCache.containsKey(mineSkinUUID)) {
-            return textureFromSkinTexture(textureCache[mineSkinUUID]!!)
+            return textureFromSkinTexture(textureCache[mineSkinUUID] ?: return this)
         }
 
         val target = URL("https://api.mineskin.org/get/uuid/$mineSkinUUID")
@@ -541,32 +537,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         }
         return this
     }
-
-
-    /**
-     * Sets the material of the item stack.
-     *
-     * @param material the material to set
-     * @return the ItemBuilder instance
-     */
-    fun type(material: Material): ItemBuilder {
-        itemStack.type = material
-        return this
-    }
-
-    /**
-     * Sets the type of the material in the ItemBuilder, if the given condition is true.
-     *
-     * @param material The material to set.
-     * @param condition The condition that determines whether the type should be set.
-     * @return The ItemBuilder instance.
-     */
-    fun typeIf(material: Material, condition: Boolean = false): ItemBuilder {
-        if (condition) {
-            itemStack.type = material
-        }
-        return this
-    }
+    
 
     /**
      * Creates a deep copy of the current ItemBuilder object.

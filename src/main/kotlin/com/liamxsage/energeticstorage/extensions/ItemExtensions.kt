@@ -3,9 +3,8 @@ package com.liamxsage.energeticstorage.extensions
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
 import com.liamxsage.energeticstorage.items.ItemBuilder
 import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 import org.bukkit.NamespacedKey
-import org.bukkit.block.Block
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 /**
