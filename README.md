@@ -36,9 +36,11 @@ If you run into any issues,
   * [ ] Importer
     * [ ] Hopper Input
   * [ ] Exporter
+  * [x] Configurable Network Length
 * [ ] Player/Region Whitelist
   * [ ] Lands Integration
 * [x] Support for 1.20.6
+* [x] MySQL, MariaDB, SQLite, PostgreSQL, and H2 support
 
 
 
@@ -91,12 +93,18 @@ drives:
     items: 65536
     types: 512
 
+networks:
+  maxLength: 128 # The maximum length of the network (connected blocks)
+
 storage:
-  # The storage type to use. Options: "mysql", "mariadb"
-  type: "mariadb"
+  # The storage type to use. Options: "mysql", "mariadb", "sqlite", "postgresql", "h2"
+  # I highly recommend using MySQL/MariaDB or PostgreSQL for production environments.
+  type: "sqlite"
+  database: "energeticstorage.db"
+
+  # MySQL/MariaDB/PostgreSQL configuration
   host: "localhost"
   port: 3306
-  database: "energeticstorage"
   username: "root"
   password: "password"
 ```

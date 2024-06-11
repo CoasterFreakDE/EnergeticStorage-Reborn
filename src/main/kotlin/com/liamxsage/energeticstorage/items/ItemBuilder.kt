@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import java.lang.reflect.Field
+import java.net.URI
 import java.net.URL
 import java.util.*
 
@@ -290,7 +291,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
             return textureFromSkinTexture(textureCache[mineSkinUUID] ?: return this)
         }
 
-        val target = URL("https://api.mineskin.org/get/uuid/$mineSkinUUID")
+        val target = URI("https://api.mineskin.org/get/uuid/$mineSkinUUID").toURL()
         val connection = target.openConnection()
         connection.setRequestProperty("User-Agent", "RainbowIslands/1.0")
         val inputStream = connection.getInputStream()
@@ -451,7 +452,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      */
     fun clearFlags(): ItemBuilder {
         val meta = itemStack.itemMeta
-        meta.removeItemFlags(*ItemFlag.values())
+        meta.removeItemFlags(*ItemFlag.entries.toTypedArray())
         itemStack.itemMeta = meta
         return this
     }
@@ -537,7 +538,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         }
         return this
     }
-    
+
 
     /**
      * Creates a deep copy of the current ItemBuilder object.
@@ -579,7 +580,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         )
 
         fun fromItemStack(itemStack: ItemStack): ItemBuilder {
-            var mat =
+            val mat =
                 if (invalidMaterials.contains(itemStack.type)) Material.GRASS_BLOCK else itemStack.type
             val builder = ItemBuilder(mat)
             builder.itemStack = itemStack

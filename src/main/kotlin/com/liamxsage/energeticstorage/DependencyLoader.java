@@ -24,9 +24,7 @@ public class DependencyLoader implements PluginLoader {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(".dependencies"))))) {
-            reader.lines().forEach(dependency -> {
-                maven.addDependency(new Dependency(new DefaultArtifact(dependency), null));
-            });
+            reader.lines().forEach(dependency -> maven.addDependency(new Dependency(new DefaultArtifact(dependency), null)));
 
             maven.addRepository(new RemoteRepository.Builder("flawcra", "default", "https://nexus.flawcra.cc/repository/maven-mirrors/").build());
         } catch (Exception e) {
