@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
+import org.bukkit.inventory.PlayerInventory
 import java.util.*
 
 class DiskDriveGui : InventoryHolder, Listener {
@@ -96,66 +97,104 @@ class DiskDriveGui : InventoryHolder, Listener {
         when(clickType) {
            in setOf(ClickType.SWAP, ClickType.SWAP_RIGHT_CLICK) -> return@with
             in setOf(ClickType.INVENTORY_CLICK, ClickType.SHIFT_IN, ClickType.INTO_HALF, ClickType.INTO) -> {
-                val item = currentItem ?: return
-                if (item.type != Material.MUSIC_DISC_5 || !item.hasKey(DISK_ID_NAMESPACE)) return@with
-                val driveUUID = item.getKey(DISK_ID_NAMESPACE) ?: return
-                val drive = DiskCache.getDiskByUUID(UUID.fromString(driveUUID)) ?: return
-
-                if (!diskDrive.canFitDrive) {
-                    player.sendDeniedSound()
-                    return@with
-                }
-
-                if (diskDrive.disks.any { it.uuid == drive.uuid }) {
-                    player.sendDeniedSound()
-                    return@with
-                }
-
-                val firstEmpty = thisInventory.firstEmpty()
-                if (firstEmpty == -1) {
-                    player.sendDeniedSound()
-                    return@with
-                }
-
-                drive.diskDriveUUID = diskDrive.uuid
-                diskDrive.disks.add(drive)
-                drive.saveToDB()
-                playerInventory.removeItem(item)
-                thisInventory.setItem(firstEmpty, item)
-
-                player.sendInsertDiskSound()
-                diskDrive.updateBlock(block)
+                handleInsertDisk(diskDrive, player, thisInventory, playerInventory, block)
             }
             in setOf(ClickType.OUT, ClickType.OUT_HALF, ClickType.SHIFT_OUT) -> {
-                if (slot == 0) {
-                    player.closeInventory()
-                    return@with
-                }
-                if (slot in setOf(1, 8)) return@with
-
-                val diskItem = thisInventory.getItem(slot) ?: return@with
-                if (diskItem.type != Material.MUSIC_DISC_5 || !diskItem.hasKey(DISK_ID_NAMESPACE)) return@with
-
-                val diskUUID = diskItem.getKey(DISK_ID_NAMESPACE) ?: return
-                val disk = DiskCache.getDiskByUUID(UUID.fromString(diskUUID)) ?: Disk(UUID.fromString(diskUUID))
-
-                val firstEmpty = playerInventory.firstEmpty()
-                if (firstEmpty == -1) {
-                    player.sendDeniedSound()
-                    return@with
-                }
-
-                diskDrive.disks.remove(disk)
-                disk.diskDriveUUID = null
-                disk.saveToDB()
-
-                thisInventory.setItem(slot, null)
-                playerInventory.setItem(firstEmpty, diskItem)
-
-                player.sendRemoveDiskSound()
-                diskDrive.updateBlock(block)
+                handleRemoveDisk(player, thisInventory, playerInventory, diskDrive, block)
             }
             else -> return@with
         }
+    }
+
+    /**
+     * Handles the logic for removing a disk from a disk drive in an inventory click event.
+     *
+     * @param player The player who triggered the inventory click event.
+     * @param thisInventory The inventory in which the event occurred.
+     * @param playerInventory The player's inventory.
+     * @param diskDrive The disk drive from which the disk is removed.
+     * @param block The block representing the disk drive.
+     */
+    private fun InventoryClickEvent.handleRemoveDisk(
+        player: Player,
+        thisInventory: Inventory,
+        playerInventory: PlayerInventory,
+        diskDrive: DiskDrive,
+        block: Block
+    ) {
+        if (slot == 0) {
+            player.closeInventory()
+            return
+        }
+        if (slot in setOf(1, 8)) return
+
+        val diskItem = thisInventory.getItem(slot) ?: return
+        if (diskItem.type != Material.MUSIC_DISC_5 || !diskItem.hasKey(DISK_ID_NAMESPACE)) return
+
+        val diskUUID = diskItem.getKey(DISK_ID_NAMESPACE) ?: return
+        val disk = DiskCache.getDiskByUUID(UUID.fromString(diskUUID)) ?: Disk(UUID.fromString(diskUUID))
+
+        val firstEmpty = playerInventory.firstEmpty()
+        if (firstEmpty == -1) {
+            player.sendDeniedSound()
+            return
+        }
+
+        diskDrive.disks.remove(disk)
+        disk.diskDriveUUID = null
+        disk.saveToDB()
+
+        thisInventory.setItem(slot, null)
+        playerInventory.setItem(firstEmpty, diskItem)
+
+        player.sendRemoveDiskSound()
+        diskDrive.updateBlock(block)
+    }
+
+    /**
+     * Handles inserting a disk into a disk drive during an inventory click event.
+     *
+     * @param diskDrive The disk drive receiving the disk.
+     * @param player The player interacting with the disk drive.
+     * @param thisInventory The inventory where the disk is being inserted.
+     * @param playerInventory The player's inventory.
+     * @param block The block representing the disk drive.
+     */
+    private fun InventoryClickEvent.handleInsertDisk(
+        diskDrive: DiskDrive,
+        player: Player,
+        thisInventory: Inventory,
+        playerInventory: PlayerInventory,
+        block: Block
+    ) {
+        val item = currentItem ?: return
+        if (item.type != Material.MUSIC_DISC_5 || !item.hasKey(DISK_ID_NAMESPACE)) return
+        val driveUUID = item.getKey(DISK_ID_NAMESPACE) ?: return
+        val drive = DiskCache.getDiskByUUID(UUID.fromString(driveUUID)) ?: return
+
+        if (!diskDrive.canFitDrive) {
+            player.sendDeniedSound()
+            return
+        }
+
+        if (diskDrive.disks.any { it.uuid == drive.uuid }) {
+            player.sendDeniedSound()
+            return
+        }
+
+        val firstEmpty = thisInventory.firstEmpty()
+        if (firstEmpty == -1) {
+            player.sendDeniedSound()
+            return
+        }
+
+        drive.diskDriveUUID = diskDrive.uuid
+        diskDrive.disks.add(drive)
+        drive.saveToDB()
+        playerInventory.removeItem(item)
+        thisInventory.setItem(firstEmpty, item)
+
+        player.sendInsertDiskSound()
+        diskDrive.updateBlock(block)
     }
 }
