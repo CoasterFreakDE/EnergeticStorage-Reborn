@@ -15,6 +15,9 @@ val DISK_ID_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "disk_id")
 val NETWORK_INTERFACE_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "network_interface")
 val NETWORK_INTERFACE_ID_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "network_interface_id")
 
+val ITEM_AMOUNT_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "item_amount")
+val GUI_FIXED_ITEM_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "gui_fixed_item")
+
 val PLAYER_DEBUG_MODE_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "debug_mode")
 
 var MAX_NETWORK_LENGTH = 512

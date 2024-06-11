@@ -5,6 +5,7 @@ import com.liamxsage.energeticstorage.database.DatabaseConnection
 import com.liamxsage.energeticstorage.managers.RegisterManager
 import com.liamxsage.energeticstorage.serialization.ItemStackAdapter
 import com.liamxsage.energeticstorage.serialization.LocationAdapter
+import com.liamxsage.energeticstorage.serialization.OptionalTypeAdapter
 import com.liamxsage.energeticstorage.serialization.UUIDAdapter
 import org.bukkit.Location
 import org.bukkit.inventory.ItemStack
@@ -33,6 +34,7 @@ class EnergeticStorage : JavaPlugin() {
         .registerTypeAdapter(ItemStack::class.java, ItemStackAdapter())
         .registerTypeAdapter(UUID::class.java, UUIDAdapter())
         .registerTypeAdapter(Location::class.java, LocationAdapter())
+        .registerTypeAdapter(Optional::class.java, OptionalTypeAdapter())
         .create()
 
     init {

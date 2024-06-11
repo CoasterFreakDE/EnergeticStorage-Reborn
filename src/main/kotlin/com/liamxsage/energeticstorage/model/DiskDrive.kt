@@ -8,8 +8,6 @@ import com.liamxsage.energeticstorage.database.loadDisks
 import com.liamxsage.energeticstorage.extensions.persistentDataContainer
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import com.liamxsage.energeticstorage.network.NetworkInterface
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.type.ChiseledBookshelf
@@ -18,13 +16,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
-@Serializable
 data class DiskDrive(
-    @Contextual override val uuid: UUID = UUID.randomUUID(),
+    override val uuid: UUID = UUID.randomUUID(),
     val disks: MutableList<Disk> = mutableListOf()
 ) : NetworkInterface {
 
-    @Contextual
     var connectedCoreUUID: UUID? = null
 
     constructor(uuid: UUID) : this(uuid, mutableListOf())

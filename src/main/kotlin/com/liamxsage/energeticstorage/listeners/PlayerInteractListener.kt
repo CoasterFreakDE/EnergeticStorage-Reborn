@@ -8,6 +8,7 @@ import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.gui.DiskDriveGui
+import com.liamxsage.energeticstorage.gui.TerminalGui
 import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.model.Terminal
@@ -65,11 +66,7 @@ class PlayerInteractListener : Listener {
                 }
                 val core =
                     NetworkInterfaceCache.getNetworkInterfaceByUUID(terminal.connectedCoreUUID!!) as? Core ?: return
-
-                val disks = core.getAllDisksInSystem()
-                player.sendMessagePrefixed("Connected Disks: ${disks.size} with a total size of ${core.totalSize}")
-
-                // Todo: Open Gui
+                TerminalGui.instance.openInventory(player, core)
             }
 
             else -> { /* Do nothing */

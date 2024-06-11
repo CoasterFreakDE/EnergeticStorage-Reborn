@@ -50,6 +50,17 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
     }
 
     /**
+     * Sets the amount of the item stack.
+     *
+     * @param amount the new amount of the item stack
+     * @return the ItemBuilder instance with the updated amount
+     */
+    fun asAmount(amount: Int): ItemBuilder {
+        itemStack.amount = amount
+        return this
+    }
+
+    /**
      * Change the displayname of the item.
      *
      * @param displayName The new displayname (could be rgb).

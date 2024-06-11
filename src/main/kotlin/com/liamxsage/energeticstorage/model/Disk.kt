@@ -4,19 +4,16 @@ import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
 import com.liamxsage.energeticstorage.cache.DiskCache
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-@Serializable
 data class Disk(
-    @Contextual val uuid: UUID = UUID.randomUUID(),
+    val uuid: UUID = UUID.randomUUID(),
     val size: DiskSize = DiskSize.SMALL,
     val items: MutableList<ESItem> = mutableListOf(),
-    @Contextual var diskDriveUUID: UUID? = null
+    var diskDriveUUID: UUID? = null
 ) : Cloneable {
 
     init {

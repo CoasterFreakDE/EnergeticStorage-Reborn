@@ -1,10 +1,8 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.isNetworkInterface
-import com.liamxsage.energeticstorage.extensions.persistentDataContainer
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import com.liamxsage.energeticstorage.extensions.sendSuccessSound
 import com.liamxsage.energeticstorage.model.Cable
@@ -15,7 +13,6 @@ import com.liamxsage.energeticstorage.network.NetworkInterfaceType
 import com.liamxsage.energeticstorage.network.getNetworkInterface
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceFromBlock
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
-import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
@@ -36,7 +33,8 @@ class BlockBreakListener : Listener {
         when (networkInterfaceType) {
             NetworkInterfaceType.DISK_DRIVE -> removeDiskDrive(block, player)
             NetworkInterfaceType.TERMINAL -> removeTerminal(block)
-            else -> { /* Do nothing */ }
+            else -> { /* Do nothing */
+            }
         }
 
         val itemStack = when (networkInterface) {
