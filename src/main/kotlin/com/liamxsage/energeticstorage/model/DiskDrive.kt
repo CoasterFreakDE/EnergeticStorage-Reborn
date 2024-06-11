@@ -24,6 +24,9 @@ data class DiskDrive(
     val disks: MutableList<Disk> = mutableListOf()
 ) : NetworkInterface {
 
+    @Contextual
+    var connectedCoreUUID: UUID? = null
+
     constructor(uuid: UUID) : this(uuid, mutableListOf())
 
     init {

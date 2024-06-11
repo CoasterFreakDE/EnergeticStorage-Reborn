@@ -33,8 +33,10 @@ class BlockBreakListener : Listener {
         val networkInterface = getNetworkInterface(block) ?: return@with
         isDropItems = false
 
-        if (networkInterfaceType == NetworkInterfaceType.DISK_DRIVE) {
-            removeDiskDrive(block, player)
+        when (networkInterfaceType) {
+            NetworkInterfaceType.DISK_DRIVE -> removeDiskDrive(block, player)
+            NetworkInterfaceType.TERMINAL -> removeTerminal(block)
+            else -> { /* Do nothing */ }
         }
 
         val itemStack = when (networkInterface) {
@@ -56,9 +58,13 @@ class BlockBreakListener : Listener {
         player.sendSuccessSound()
     }
 
+    /**
+     * Removes the disk drive and drops any disks it contains.
+     *
+     * @param block The block representing the disk drive.
+     * @param player The player who triggered the removal.
+     */
     private fun removeDiskDrive(block: Block, player: Player) {
-        if (block.type != Material.CHISELED_BOOKSHELF) return
-        if (!block.persistentDataContainer.has(NETWORK_INTERFACE_ID_NAMESPACE)) return
         val diskDrive = getNetworkInterfaceFromBlock<DiskDrive>(block)
 
         for (drive in diskDrive.disks) {
@@ -68,5 +74,28 @@ class BlockBreakListener : Listener {
         }
         diskDrive.disks.clear()
         NetworkInterfaceCache.addNetworkInterface(diskDrive)
+
+        if (diskDrive.connectedCoreUUID == null) return
+        val core =
+            NetworkInterfaceCache.getNetworkInterfaceByUUID(diskDrive.connectedCoreUUID!!) as? Core ?: return
+
+        core.connectedDiskDrives.remove(diskDrive)
+        NetworkInterfaceCache.addNetworkInterface(core)
+    }
+
+    /**
+     * Removes the terminal from the network.
+     *
+     * @param block The block containing the terminal.
+     */
+    private fun removeTerminal(block: Block) {
+        val terminal = getNetworkInterfaceFromBlock<Terminal>(block)
+
+        if (terminal.connectedCoreUUID == null) return
+        val core =
+            NetworkInterfaceCache.getNetworkInterfaceByUUID(terminal.connectedCoreUUID!!) as? Core ?: return
+
+        core.connectedTerminals.remove(terminal)
+        NetworkInterfaceCache.addNetworkInterface(core)
     }
 }

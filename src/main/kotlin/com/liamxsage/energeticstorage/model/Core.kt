@@ -49,6 +49,14 @@ data class Core(
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()
 
+    /**
+     * Returns a list of all disks in the system.
+     *
+     * @return A list of [Disk] objects representing the disks in the system.
+     */
+    fun getAllDisksInSystem(): List<Disk> {
+        return connectedDiskDrives.map { it.disks }.flatten()
+    }
 
     /**
      * Represents the total number of disks in the system.

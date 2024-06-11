@@ -37,7 +37,7 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
         }
 
         val itemStack = when (item) {
-            "system" -> {
+            "diskdrive" -> {
                 DiskDrive().createDiskDriveItem()
             }
 
@@ -81,7 +81,7 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
         return when (args.size) {
             1 -> {
                 listOf(
-                    "system",
+                    "diskdrive",
                     "core",
                     "cable",
                     "terminal",

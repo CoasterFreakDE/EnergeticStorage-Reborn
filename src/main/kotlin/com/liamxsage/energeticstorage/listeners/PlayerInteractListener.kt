@@ -2,6 +2,7 @@ package com.liamxsage.energeticstorage.listeners
 
 import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.TEXT_GRAY
 import com.liamxsage.energeticstorage.cache.DiskCache
 import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.saveToDB
@@ -56,7 +57,8 @@ class PlayerInteractListener : Listener {
 
             NetworkInterfaceType.TERMINAL -> {
                 val terminal = getNetworkInterface(block) as? Terminal ?: return
-                if (terminal.connectedCoreUUID == null) {
+
+                if (terminal.connectedCoreUUID == null && updateNetworkCoreWithConnectedInterfaces(block) == null) {
                     player.sendMessagePrefixed("This terminal is not connected to a core.")
                     player.sendDeniedSound()
                     return
@@ -64,14 +66,10 @@ class PlayerInteractListener : Listener {
                 val core =
                     NetworkInterfaceCache.getNetworkInterfaceByUUID(terminal.connectedCoreUUID!!) as? Core ?: return
 
-                player.sendMessageBlock(
-                    "Network Information",
-                    "Connected Terminals: ${core.connectedTerminals.size}",
-                    "Connected DiskDrives: ${core.connectedDiskDrives.size}",
-                    "Total Items: ${core.totalItems}/${core.totalSize}",
-                    "Total Types: ${core.totalTypes}/${core.totalTypesSize}",
-                    "Total Disks: ${core.totalDisks}/${core.connectedDiskDrives.size * 6}"
-                )
+                val disks = core.getAllDisksInSystem()
+                player.sendMessagePrefixed("Connected Disks: ${disks.size} with a total size of ${core.totalSize}")
+
+                // Todo: Open Gui
             }
 
             else -> { /* Do nothing */
@@ -89,18 +87,31 @@ class PlayerInteractListener : Listener {
      */
     private fun PlayerInteractEvent.sendDebugInfo(networkInterfaceType: NetworkInterfaceType) {
         // The following code is only for debugging purposes
+        val clickedInterface = getNetworkInterface(clickedBlock!!) ?: return
         val connectedInterfaced = getConnectedNetworkInterfaces(clickedBlock!!)
         val interfacesSummedByType = connectedInterfaced.values.groupBy { it::class.java }.mapValues { it.value.size }
         player.sendMessagePrefixed("Clicked Network Interface: <green>${
             networkInterfaceType.name.lowercase(Locale.getDefault())
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        }"
-        )
+        }")
+        player.sendMessagePrefixed("InterfaceUUID: <dark_green>${clickedInterface.uuid}")
         player.sendMessagePrefixed("Network Interfaces found:")
         interfacesSummedByType.forEach { (type, amount) ->
-            player.sendMessagePrefixed("${type.simpleName}: $amount")
+            player.sendMessagePrefixed("${type.simpleName}: <color:#dff9fb>$amount")
         }
         player.sendInfoSound()
+
+        val core = connectedInterfaced.filter { it.value is Core }.values.firstOrNull() as? Core
+        if (core == null) return
+
+        player.sendMessageBlock(
+            "<bold>${TEXT_GRAY}Network Information",
+            "${TEXT_GRAY}Connected Terminals: ${core.connectedTerminals.size}",
+            "${TEXT_GRAY}Connected DiskDrives: ${core.connectedDiskDrives.size}",
+            "${TEXT_GRAY}Total Items: ${core.totalItems}/${core.totalSize}",
+            "${TEXT_GRAY}Total Types: ${core.totalTypes}/${core.totalTypesSize}",
+            "${TEXT_GRAY}Total Disks: ${core.totalDisks}/${core.connectedDiskDrives.size * 6}"
+        )
     }
 
     /**

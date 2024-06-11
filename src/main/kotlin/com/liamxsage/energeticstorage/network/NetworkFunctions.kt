@@ -6,10 +6,7 @@ import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.extensions.getKey
 import com.liamxsage.energeticstorage.extensions.isNetworkInterface
 import com.liamxsage.energeticstorage.extensions.persistentDataContainer
-import com.liamxsage.energeticstorage.model.Cable
-import com.liamxsage.energeticstorage.model.Core
-import com.liamxsage.energeticstorage.model.DiskDrive
-import com.liamxsage.energeticstorage.model.Terminal
+import com.liamxsage.energeticstorage.model.*
 import dev.fruxz.ascend.extension.forceCastOrNull
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -61,12 +58,12 @@ fun getConnectedNetworkInterfaces(
  *
  * @param block The block to check for connected network interfaces.
  */
-fun updateNetworkCoreWithConnectedInterfaces(block: Block) {
+fun updateNetworkCoreWithConnectedInterfaces(block: Block): Core? {
     val connectedInterfaces = getConnectedNetworkInterfaces(block)
 
-    if (connectedInterfaces.isEmpty()) return
+    if (connectedInterfaces.isEmpty()) return null
     val cores = connectedInterfaces.filter { it.value is Core }
-    if (cores.isEmpty()) return
+    if (cores.isEmpty()) return null
 
     assert(cores.size == 1) { "Multiple cores found in network." }
 
@@ -78,6 +75,7 @@ fun updateNetworkCoreWithConnectedInterfaces(block: Block) {
         when (networkInterface) {
             is DiskDrive -> {
                 core.connectedDiskDrives.add(networkInterface)
+                networkInterface.connectedCoreUUID = core.uuid
             }
 
             is Terminal -> {
@@ -90,6 +88,7 @@ fun updateNetworkCoreWithConnectedInterfaces(block: Block) {
         }
     }
     NetworkInterfaceCache.addNetworkInterface(core)
+    return core
 }
 
 
