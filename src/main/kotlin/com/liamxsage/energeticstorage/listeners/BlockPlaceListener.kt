@@ -1,8 +1,8 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
-import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
@@ -31,7 +31,7 @@ class BlockPlaceListener : Listener {
         block.persistentDataContainer[NETWORK_INTERFACE_NAMESPACE, PersistentDataType.BOOLEAN] = true
 
         try {
-            updateNetworkCoreWithConnectedInterfaces(block, player)
+            updateNetworkCoreWithConnectedInterfaces(block)
         } catch (e: AssertionError) {
             player.sendMessagePrefixed("Multiple Cores detected. Please remove one.")
             player.sendDeniedSound()
@@ -41,22 +41,27 @@ class BlockPlaceListener : Listener {
 
         player.sendMessagePrefixed("Successfully placed ${
             networkInterfaceType.name.lowercase(Locale.getDefault())
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}.")
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }."
+        )
         player.sendSuccessSound()
     }
 
     private fun placeDiskDrive(block: Block, itemInHand: ItemStack) {
         if (block.type != Material.CHISELED_BOOKSHELF) return
-        if (!itemInHand.hasKey(DISK_DRIVE_ID_NAMESPACE)) return
-        val systemUUID = itemInHand.getKey(DISK_DRIVE_ID_NAMESPACE) ?: return
-        val system = DiskDriveCache.getDiskDriveByUUID(UUID.fromString(systemUUID)) ?: DiskDrive(UUID.fromString(systemUUID))
+        if (!itemInHand.hasKey(NETWORK_INTERFACE_ID_NAMESPACE)) return
+        val diskDriveUUID = itemInHand.getKey(NETWORK_INTERFACE_ID_NAMESPACE) ?: return
+        val diskDrive =
+            NetworkInterfaceCache.getNetworkInterfaceByUUID(UUID.fromString(diskDriveUUID)) as? DiskDrive ?: DiskDrive(
+                UUID.fromString(diskDriveUUID)
+            )
 
         val chiseledBookshelf = block.blockData as ChiseledBookshelf
-        val drives = system.disks.size
+        val drives = diskDrive.disks.size
         for (i in 0 until drives) {
             chiseledBookshelf.setSlotOccupied(i, true)
         }
         block.blockData = chiseledBookshelf
-        block.persistentDataContainer[DISK_DRIVE_ID_NAMESPACE, PersistentDataType.STRING] = systemUUID
+        block.persistentDataContainer[NETWORK_INTERFACE_ID_NAMESPACE, PersistentDataType.STRING] = diskDriveUUID
     }
 }

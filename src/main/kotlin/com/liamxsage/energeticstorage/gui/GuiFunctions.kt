@@ -30,7 +30,11 @@ fun InventoryHolder.findClickType(event: InventoryClickEvent, title: Component):
  * @param isShiftClick indicates if the click is a shift-click
  * @return the determined [ClickType] for the click
  */
-private fun determineClickTypeForNonHolderClick(viewTitle: Component, title: Component, isShiftClick: Boolean): ClickType {
+private fun determineClickTypeForNonHolderClick(
+    viewTitle: Component,
+    title: Component,
+    isShiftClick: Boolean
+): ClickType {
     return if (viewTitle == title) {
         if (isShiftClick) ClickType.SHIFT_IN else ClickType.INVENTORY_CLICK
     } else {

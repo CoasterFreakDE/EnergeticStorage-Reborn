@@ -5,7 +5,7 @@
 </a>
 </div>
 
-  <h3 align="center">Energetic Storage Reborn</h3>
+<h3 align="center">Energetic Storage Reborn</h3>
 
 Energetic Storage Reborn is a plugin that is heavily inspired by the forge mods
 named [Applied Energistics 2](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2)
@@ -13,7 +13,8 @@ and [Refined Storage](https://www.curseforge.com/minecraft/mc-mods/refined-stora
 If you don't know what Applied Energistics 2 is, it's a mod that allows the player to store large numbers of items,
 sometimes hundreds of thousands, in just a few blocks.
 
-Energetic Storage Reborn is a complete recode for Minecraft 1.20.6 of the original [Energetic Storage](https://github.com/SeanOMik/EnergeticStorage).
+Energetic Storage Reborn is a complete recode for Minecraft 1.20.6 of the
+original [Energetic Storage](https://github.com/SeanOMik/EnergeticStorage).
 It is significantly more modern,
 designed exclusively for PaperMC, Java 21, Kotlin, and Minecraft 1.20.6+,
 utilizing the latest features the game has to offer.
@@ -26,29 +27,31 @@ If you run into any issues,
 ---
 
 ## Features:
+
 * [ ] Networking
-  * [x] Cables (Data Transmissions)
-  * [ ] Network Cores
-  * [x] DiskDrives
-  * [x] Disks
-  * [ ] Terminals
-    * [ ] Terminal Sorting
-  * [ ] Importer
-    * [ ] Hopper Input
-  * [ ] Exporter
-  * [x] Configurable Network Length
+    * [x] Cables (Data Transmissions)
+    * [ ] Network Cores
+    * [x] DiskDrives
+    * [x] Disks
+    * [ ] Terminals
+        * [ ] Terminal Sorting
+    * [ ] Importer
+        * [ ] Hopper Input
+    * [ ] Exporter
+    * [x] Configurable Network Length
 * [ ] Player/Region Whitelist
-  * [ ] Lands Integration
+    * [ ] Lands Integration
 * [x] Support for 1.20.6
 * [x] MySQL, MariaDB, SQLite, PostgreSQL, and H2 support
 
-
-
 ## Items And Blocks:
+
 * 1k, 4k, 16k, and 64k, drives
-  * The drives are needed to store items. 1k can store 1024 items, 4k can store 4096 and so on (1024 * how many thousand).
-  * All drives have a type limit set at 64, 128, 256 or 512. This means that only this amount of different item types can be added to a single drive.
-    * Can be changed in config.
+    * The drives are needed to store items. 1k can store 1024 items, 4k can store 4096 and so on (1024 * how many
+      thousand).
+    * All drives have a type limit set at 64, 128, 256 or 512. This means that only this amount of different item types
+      can be added to a single drive.
+        * Can be changed in config.
 * ES System
     * The ES System is what keeps the drives inside it and is used to access the items stored on the drives.
     * You can trust players into the system; they will have just as much access as you do.
@@ -59,20 +62,26 @@ If you run into any issues,
         * Only trusted players and the owner of the system can destroy it.
 
 ## Permissions
+
 * `energeticstorage.*`: Gives all Energetic Storage permissions. Default: `op`
 * `energeticstorage.reload`: Gives permission to reload the Energetic Storage configuration files. Default: `op`
 * `energeticstorage.esgive`: Gives permission to give an Energetic Storage item to themselves. Default: `op`
 * `energeticstorage.esgive.others`: Gives permission to give an Energetic Storage item to others. Default: `op`
-* `energeticstorage.system.open.untrusted`: Gives permission to open an ES System that the player is not trusted on. Default: `op`
+* `energeticstorage.system.open.untrusted`: Gives permission to open an ES System that the player is not trusted on.
+  Default: `op`
 * `energeticstorage.system.create`: Gives permission to create an ES System. Default: `Everyone`
-* `energeticstorage.system.destroy.untrusted`: Gives permission to destroy a system the player isn't trusted on. Default: `op`
+* `energeticstorage.system.destroy.untrusted`: Gives permission to destroy a system the player isn't trusted on.
+  Default: `op`
 
 ## Commands
+
 * /esreload
 * /esgive [1k, 4k, 16k, 64k, system] (player)
 
 ## Config:
+
 Config.yml:
+
 ```yaml
 drives:
   # Sets the drives max type limit.
@@ -108,6 +117,7 @@ storage:
   username: "root"
   password: "password"
 ```
+
 ---
 
 <p align="center">

@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class Disk(

@@ -12,8 +12,8 @@ const val TEXT_GRADIENT_DEFAULT = "<gradient:#f6e58d:#ffbe76>"
 const val PACKAGE_NAME = "com.liamxsage.energeticstorage"
 
 val DISK_ID_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "disk_id")
-val DISK_DRIVE_ID_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "disk_drive_id")
 val NETWORK_INTERFACE_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "network_interface")
+val NETWORK_INTERFACE_ID_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "network_interface_id")
 
 val PLAYER_DEBUG_MODE_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "debug_mode")
 

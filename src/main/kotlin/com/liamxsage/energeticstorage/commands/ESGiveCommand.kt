@@ -40,17 +40,22 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
             "system" -> {
                 DiskDrive().createDiskDriveItem()
             }
+
             "core" -> {
                 Core().createCoreItem()
             }
+
             "cable" -> {
                 Cable().createCableItem()
             }
+
             "terminal" -> {
                 Terminal().createTerminalItem()
             }
+
             else -> {
-                val diskSize = DiskSize.entries.find { it.diskName.lowercase(Locale.getDefault()) == item.replace("_", " ") }
+                val diskSize =
+                    DiskSize.entries.find { it.diskName.lowercase(Locale.getDefault()) == item.replace("_", " ") }
                 if (diskSize == null) {
                     sender.sendMessagePrefixed("<red>Invalid drive size")
                     return true
@@ -67,15 +72,28 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): List<String> {
         return when (args.size) {
             1 -> {
-                listOf("system", "core", "cable", "terminal", *DiskSize.entries.map { it.diskName.replace(" ", "_") }.toTypedArray())
-                    .filter { it.startsWith(args[0], ignoreCase = true)}
+                listOf(
+                    "system",
+                    "core",
+                    "cable",
+                    "terminal",
+                    *DiskSize.entries.map { it.diskName.replace(" ", "_") }.toTypedArray()
+                )
+                    .filter { it.startsWith(args[0], ignoreCase = true) }
             }
+
             2 -> {
-                Bukkit.getOnlinePlayers().map { it.name }.filter { it.startsWith(args[1], ignoreCase = true)}
+                Bukkit.getOnlinePlayers().map { it.name }.filter { it.startsWith(args[1], ignoreCase = true) }
             }
+
             else -> {
                 emptyList()
             }

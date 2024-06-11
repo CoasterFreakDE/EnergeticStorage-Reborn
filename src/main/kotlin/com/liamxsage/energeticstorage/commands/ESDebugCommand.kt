@@ -32,7 +32,12 @@ class ESDebugCommand : CommandExecutor, TabExecutor {
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): List<String> {
         return when (args.size) {
             1 -> listOf("on", "off")
             else -> emptyList()

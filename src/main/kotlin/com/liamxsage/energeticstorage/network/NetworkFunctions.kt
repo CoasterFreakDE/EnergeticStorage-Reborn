@@ -1,21 +1,22 @@
 package com.liamxsage.energeticstorage.network
 
-import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.MAX_NETWORK_LENGTH
-import com.liamxsage.energeticstorage.cache.DiskDriveCache
-import com.liamxsage.energeticstorage.extensions.*
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
+import com.liamxsage.energeticstorage.extensions.getKey
+import com.liamxsage.energeticstorage.extensions.isNetworkInterface
+import com.liamxsage.energeticstorage.extensions.persistentDataContainer
+import com.liamxsage.energeticstorage.model.Cable
 import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.DiskDrive
-import com.liamxsage.energeticstorage.model.Cable
 import com.liamxsage.energeticstorage.model.Terminal
+import dev.fruxz.ascend.extension.forceCastOrNull
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
-interface NetworkInterface
 
 /**
  * Returns a map of connected network interfaces to the given block.
@@ -43,7 +44,8 @@ fun getConnectedNetworkInterfaces(
         val networkInterface = getNetworkInterface(relativeBlock) ?: continue
         connectedInterfaces[relativeBlock] = networkInterface
 
-        val iteratedInterfaces = getConnectedNetworkInterfaces(relativeBlock, face.oppositeFace, iteration + 1, visitedBlocks)
+        val iteratedInterfaces =
+            getConnectedNetworkInterfaces(relativeBlock, face.oppositeFace, iteration + 1, visitedBlocks)
 
         // Merge iteratedInterfaces into connectedInterfaces
         iteratedInterfaces.forEach { (key, value) ->
@@ -59,7 +61,7 @@ fun getConnectedNetworkInterfaces(
  *
  * @param block The block to check for connected network interfaces.
  */
-fun updateNetworkCoreWithConnectedInterfaces(block: Block, player: Player) {
+fun updateNetworkCoreWithConnectedInterfaces(block: Block) {
     val connectedInterfaces = getConnectedNetworkInterfaces(block)
 
     if (connectedInterfaces.isEmpty()) return
@@ -76,18 +78,18 @@ fun updateNetworkCoreWithConnectedInterfaces(block: Block, player: Player) {
         when (networkInterface) {
             is DiskDrive -> {
                 core.connectedDiskDrives.add(networkInterface)
-                player.sendMessagePrefixed("Connected disk drive to core.")
-                player.sendInfoSound()
             }
+
             is Terminal -> {
                 core.connectedTerminals.add(networkInterface)
-                networkInterface.connectedCore = core
-                player.sendMessagePrefixed("Connected terminal to core.")
-                player.sendInfoSound()
+                networkInterface.connectedCoreUUID = core.uuid
             }
-            else -> { /* Do nothing */ }
+
+            else -> { /* Do nothing */
+            }
         }
     }
+    NetworkInterfaceCache.addNetworkInterface(core)
 }
 
 
@@ -131,16 +133,28 @@ fun getNetworkInterfaceType(itemStack: ItemStack): NetworkInterfaceType? {
  */
 fun getNetworkInterface(block: Block): NetworkInterface? {
     return when (getNetworkInterfaceType(block)) {
-        NetworkInterfaceType.DISK_DRIVE -> {
-            if (!block.persistentDataContainer.has(DISK_DRIVE_ID_NAMESPACE)) return null
-            val diskDriveUUID = block.persistentDataContainer[DISK_DRIVE_ID_NAMESPACE, PersistentDataType.STRING] ?: return null
-            return DiskDriveCache.getDiskDriveByUUID(UUID.fromString(diskDriveUUID)) ?: DiskDrive(UUID.fromString(diskDriveUUID))
-        }
-        NetworkInterfaceType.TERMINAL -> Terminal()
-        NetworkInterfaceType.CORE -> Core()
-        NetworkInterfaceType.CABLE -> Cable()
+        NetworkInterfaceType.DISK_DRIVE -> getNetworkInterfaceFromBlock<DiskDrive>(block)
+        NetworkInterfaceType.TERMINAL -> getNetworkInterfaceFromBlock<Terminal>(block)
+        NetworkInterfaceType.CORE -> getNetworkInterfaceFromBlock<Core>(block)
+        NetworkInterfaceType.CABLE -> getNetworkInterfaceFromBlock<Cable>(block)
         else -> null
     }
+}
+
+/**
+ * Retrieves the network interface of the given block.
+ *
+ * @param block The block to retrieve the network interface from.
+ * @return The network interface associated with the block.
+ */
+inline fun <reified T : NetworkInterface> getNetworkInterfaceFromBlock(block: Block): T {
+    val networkInterfaceUUID =
+        block.persistentDataContainer[NETWORK_INTERFACE_ID_NAMESPACE, PersistentDataType.STRING]?.let {
+            UUID.fromString(it)
+        } ?: UUID.randomUUID()
+    return NetworkInterfaceCache.getNetworkInterfaceByUUID(networkInterfaceUUID)?.forceCastOrNull<T>()
+        ?: T::class.java.getDeclaredConstructor(UUID::class.java).newInstance(networkInterfaceUUID)
+            .setBlockUUID(block) as T
 }
 
 /**
@@ -151,14 +165,23 @@ fun getNetworkInterface(block: Block): NetworkInterface? {
  */
 fun getNetworkInterface(itemStack: ItemStack): NetworkInterface? {
     return when (getNetworkInterfaceType(itemStack)) {
-        NetworkInterfaceType.DISK_DRIVE -> {
-            if (!itemStack.hasKey(DISK_DRIVE_ID_NAMESPACE)) return null
-            val diskDriveUUID = itemStack.getKey(DISK_DRIVE_ID_NAMESPACE) ?: return null
-            return DiskDriveCache.getDiskDriveByUUID(UUID.fromString(diskDriveUUID)) ?: DiskDrive(UUID.fromString(diskDriveUUID))
-        }
-        NetworkInterfaceType.TERMINAL -> Terminal()
-        NetworkInterfaceType.CORE -> Core()
-        NetworkInterfaceType.CABLE -> Cable()
+        NetworkInterfaceType.DISK_DRIVE -> getNetworkInterfaceFromItemStack<DiskDrive>(itemStack)
+        NetworkInterfaceType.TERMINAL -> getNetworkInterfaceFromItemStack<Terminal>(itemStack)
+        NetworkInterfaceType.CORE -> getNetworkInterfaceFromItemStack<Core>(itemStack)
+        NetworkInterfaceType.CABLE -> getNetworkInterfaceFromItemStack<Cable>(itemStack)
         else -> null
     }
+}
+
+/**
+ * Retrieves the network interface of the given block.
+ *
+ * @param block The block to retrieve the network interface from.
+ * @return The network interface associated with the block.
+ */
+inline fun <reified T : NetworkInterface> getNetworkInterfaceFromItemStack(itemStack: ItemStack): T {
+    val networkInterfaceUUID =
+        itemStack.getKey(NETWORK_INTERFACE_ID_NAMESPACE)?.let { UUID.fromString(it) } ?: UUID.randomUUID()
+    return NetworkInterfaceCache.getNetworkInterfaceByUUID(networkInterfaceUUID)?.forceCastOrNull<T>()
+        ?: T::class.java.getDeclaredConstructor(UUID::class.java).newInstance(networkInterfaceUUID) as T
 }

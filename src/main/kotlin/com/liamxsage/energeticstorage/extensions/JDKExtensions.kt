@@ -1,7 +1,7 @@
 package com.liamxsage.energeticstorage.extensions
 
-import org.slf4j.LoggerFactory
 import dev.fruxz.ascend.tool.time.calendar.Calendar
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime

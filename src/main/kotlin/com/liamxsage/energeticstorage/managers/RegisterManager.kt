@@ -1,8 +1,8 @@
 package com.liamxsage.energeticstorage.managers
 
 import com.google.common.reflect.ClassPath
-import com.liamxsage.energeticstorage.PACKAGE_NAME
 import com.liamxsage.energeticstorage.EnergeticStorage
+import com.liamxsage.energeticstorage.PACKAGE_NAME
 import com.liamxsage.energeticstorage.annotations.RegisterCommand
 import com.liamxsage.energeticstorage.customblockdata.BlockDataListener
 import com.liamxsage.energeticstorage.extensions.getLogger
@@ -102,7 +102,7 @@ object RegisterManager {
 
             command.aliases = annotation.aliases.toList()
             command.description = annotation.description
-            if(annotation.permission.isEmpty()) {
+            if (annotation.permission.isEmpty()) {
                 command.permission = null
             } else {
                 command.permission = Permission(annotation.permission, annotation.permissionDefault).name

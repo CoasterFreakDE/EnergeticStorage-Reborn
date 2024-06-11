@@ -1,18 +1,16 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.DISK_ID_NAMESPACE
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.cache.DiskCache
-import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.gui.DiskDriveGui
+import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.model.Terminal
-import com.liamxsage.energeticstorage.network.NetworkInterfaceType
-import com.liamxsage.energeticstorage.network.getConnectedNetworkInterfaces
-import com.liamxsage.energeticstorage.network.getNetworkInterface
-import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
+import com.liamxsage.energeticstorage.network.*
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
@@ -22,7 +20,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 class PlayerInteractListener : Listener {
@@ -59,21 +56,24 @@ class PlayerInteractListener : Listener {
 
             NetworkInterfaceType.TERMINAL -> {
                 val terminal = getNetworkInterface(block) as? Terminal ?: return
-                if (terminal.connectedCore == null) {
+                if (terminal.connectedCoreUUID == null) {
                     player.sendMessagePrefixed("This terminal is not connected to a core.")
                     player.sendDeniedSound()
                     return
                 }
+                val core =
+                    NetworkInterfaceCache.getNetworkInterfaceByUUID(terminal.connectedCoreUUID!!) as? Core ?: return
 
                 player.sendMessageBlock(
                     "Network Information",
-                    "Connected Terminals: ${terminal.connectedCore!!.connectedTerminals.size}",
-                    "Connected DiskDrives: ${terminal.connectedCore!!.connectedDiskDrives.size}",
-                    "Total Items: ${terminal.connectedCore!!.totalItems}/${terminal.connectedCore!!.totalSize}",
-                    "Total Types: ${terminal.connectedCore!!.totalTypes}/${terminal.connectedCore!!.totalTypesSize}",
-                    "Total Disks: ${terminal.connectedCore!!.totalDisks}/${terminal.connectedCore!!.connectedDiskDrives.size * 6}"
+                    "Connected Terminals: ${core.connectedTerminals.size}",
+                    "Connected DiskDrives: ${core.connectedDiskDrives.size}",
+                    "Total Items: ${core.totalItems}/${core.totalSize}",
+                    "Total Types: ${core.totalTypes}/${core.totalTypesSize}",
+                    "Total Disks: ${core.totalDisks}/${core.connectedDiskDrives.size * 6}"
                 )
             }
+
             else -> { /* Do nothing */
             }
         }
@@ -111,9 +111,8 @@ class PlayerInteractListener : Listener {
      * @param player The player interacting with the disk drive.
      */
     private fun handleDiskDriveInteraction(block: Block, item: ItemStack?, player: Player) {
-        if (!block.persistentDataContainer.has(DISK_DRIVE_ID_NAMESPACE)) return
-        val diskDriveUUID = block.persistentDataContainer[DISK_DRIVE_ID_NAMESPACE, PersistentDataType.STRING] ?: return
-        val diskDrive = DiskDriveCache.getDiskDriveByUUID(UUID.fromString(diskDriveUUID)) ?: DiskDrive(UUID.fromString(diskDriveUUID))
+        if (!block.persistentDataContainer.has(NETWORK_INTERFACE_ID_NAMESPACE)) return
+        val diskDrive = getNetworkInterfaceFromBlock<DiskDrive>(block)
 
         if (tryInsertingDiskIntoDrive(item, diskDrive, player, block)) return
 
@@ -160,7 +159,7 @@ class PlayerInteractListener : Listener {
         drive.saveToDB()
         if (item.amount == 1) player.inventory.removeItem(item)
         else item.amount = item.amount.minus(1)
-        DiskDriveCache.addDiskDrive(diskDrive)
+        NetworkInterfaceCache.addNetworkInterface(diskDrive)
         diskDrive.updateBlock(block)
 
         player.sendMessagePrefixed("Successfully inserted drive.")

@@ -1,10 +1,10 @@
 package com.liamxsage.energeticstorage.database
 
 import com.liamxsage.energeticstorage.EnergeticStorage
-import com.liamxsage.energeticstorage.model.DiskSize
 import com.liamxsage.energeticstorage.model.Disk
-import com.liamxsage.energeticstorage.model.ESItem
 import com.liamxsage.energeticstorage.model.DiskDrive
+import com.liamxsage.energeticstorage.model.DiskSize
+import com.liamxsage.energeticstorage.model.ESItem
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -33,7 +33,8 @@ fun Disk.saveToDB() = transaction {
         it[DiskTable.id] = this@saveToDB.uuid
         it[DiskTable.diskDrive] = this@saveToDB.diskDriveUUID
         it[DiskTable.size] = this@saveToDB.size
-        it[DiskTable.items] = ExposedBlob(EnergeticStorage.instance.gson.toJson(this@saveToDB.items.toTypedArray()).toByteArray())
+        it[DiskTable.items] =
+            ExposedBlob(EnergeticStorage.instance.gson.toJson(this@saveToDB.items.toTypedArray()).toByteArray())
         it[DiskTable.updatedAt] = Calendar.now().javaInstant
     }
 }
@@ -49,7 +50,10 @@ fun loadFromDB(driveUUID: UUID): Disk = transaction {
 
     val systemUUID = result[DiskTable.diskDrive]
     val size = result[DiskTable.size]
-    val items = EnergeticStorage.instance.gson.fromJson(result[DiskTable.items].bytes.decodeToString(), Array<ESItem>::class.java).toMutableList()
+    val items = EnergeticStorage.instance.gson.fromJson(
+        result[DiskTable.items].bytes.decodeToString(),
+        Array<ESItem>::class.java
+    ).toMutableList()
 
     return@transaction Disk(driveUUID, size, items, systemUUID)
 }
@@ -63,7 +67,10 @@ fun DiskDrive.loadDisks() = transaction {
     val drives = DiskTable.selectAll().where(DiskTable.diskDrive eq this@loadDisks.uuid).map { row ->
         val driveUUID = row[DiskTable.id].value
         val size = row[DiskTable.size]
-        val items = EnergeticStorage.instance.gson.fromJson(row[DiskTable.items].bytes.decodeToString(), Array<ESItem>::class.java).toMutableList()
+        val items = EnergeticStorage.instance.gson.fromJson(
+            row[DiskTable.items].bytes.decodeToString(),
+            Array<ESItem>::class.java
+        ).toMutableList()
 
         Disk(driveUUID, size, items, this@loadDisks.uuid)
     }

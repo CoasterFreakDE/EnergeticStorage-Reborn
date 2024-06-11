@@ -4,7 +4,8 @@ import com.liamxsage.energeticstorage.BLOCK_PREFIX
 import com.liamxsage.energeticstorage.PLAYER_DEBUG_MODE_NAMESPACE
 import com.liamxsage.energeticstorage.PREFIX
 import dev.fruxz.stacked.text
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType

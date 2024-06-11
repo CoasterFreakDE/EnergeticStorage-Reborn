@@ -15,7 +15,6 @@ import org.bukkit.event.block.*
 import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.world.StructureGrowEvent
-import java.util.*
 import java.util.function.Predicate
 
 internal class BlockDataListener : Listener {

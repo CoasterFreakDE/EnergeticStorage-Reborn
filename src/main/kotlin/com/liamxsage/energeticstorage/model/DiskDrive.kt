@@ -1,10 +1,11 @@
 package com.liamxsage.energeticstorage.model
 
-import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
-import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.loadDisks
+import com.liamxsage.energeticstorage.extensions.persistentDataContainer
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import com.liamxsage.energeticstorage.network.NetworkInterface
 import kotlinx.serialization.Contextual
@@ -15,18 +16,25 @@ import org.bukkit.block.data.type.ChiseledBookshelf
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class DiskDrive(
-    @Contextual val uuid: UUID = UUID.randomUUID(),
+    @Contextual override val uuid: UUID = UUID.randomUUID(),
     val disks: MutableList<Disk> = mutableListOf()
 ) : NetworkInterface {
+
+    constructor(uuid: UUID) : this(uuid, mutableListOf())
 
     init {
         loadDisks()
 
-        DiskDriveCache.addDiskDrive(this)
+        NetworkInterfaceCache.addNetworkInterface(this)
+    }
+
+    override fun setBlockUUID(block: Block): NetworkInterface {
+        block.persistentDataContainer[NETWORK_INTERFACE_ID_NAMESPACE, PersistentDataType.STRING] = uuid.toString()
+        return this
     }
 
     /**
@@ -43,7 +51,7 @@ data class DiskDrive(
         )
         setGlinting(true)
         customModelData(1)
-        addPersistentData(DISK_DRIVE_ID_NAMESPACE, uuid.toString())
+        addPersistentData(NETWORK_INTERFACE_ID_NAMESPACE, uuid.toString())
         addPersistentData(NETWORK_INTERFACE_NAMESPACE, PersistentDataType.BOOLEAN, true)
         flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS)
     }.build()

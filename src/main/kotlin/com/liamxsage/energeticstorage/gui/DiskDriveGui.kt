@@ -94,14 +94,16 @@ class DiskDriveGui : InventoryHolder, Listener {
         val thisInventory = player.openInventory.topInventory
         val playerInventory = player.inventory
 
-        when(clickType) {
-           in setOf(ClickType.SWAP, ClickType.SWAP_RIGHT_CLICK) -> return@with
+        when (clickType) {
+            in setOf(ClickType.SWAP, ClickType.SWAP_RIGHT_CLICK) -> return@with
             in setOf(ClickType.INVENTORY_CLICK, ClickType.SHIFT_IN, ClickType.INTO_HALF, ClickType.INTO) -> {
                 handleInsertDisk(diskDrive, player, thisInventory, playerInventory, block)
             }
+
             in setOf(ClickType.OUT, ClickType.OUT_HALF, ClickType.SHIFT_OUT) -> {
                 handleRemoveDisk(player, thisInventory, playerInventory, diskDrive, block)
             }
+
             else -> return@with
         }
     }

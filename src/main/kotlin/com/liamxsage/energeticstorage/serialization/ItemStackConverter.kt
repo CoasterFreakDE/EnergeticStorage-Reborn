@@ -159,7 +159,7 @@ object ItemStackConverter {
             val dataInput = BukkitObjectInputStream(inputStream)
             var invSize = dataInput.readInt()
             val initialSize = invSize
-            if(invSize % 9 != 0) {
+            if (invSize % 9 != 0) {
                 invSize += (9 - invSize % 9)
             }
             val inventory = Bukkit.getServer().createInventory(null, invSize)

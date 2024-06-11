@@ -1,18 +1,19 @@
 package com.liamxsage.energeticstorage.listeners
 
-import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
-import com.liamxsage.energeticstorage.cache.DiskDriveCache
+import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
+import com.liamxsage.energeticstorage.cache.NetworkInterfaceCache
 import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.isNetworkInterface
 import com.liamxsage.energeticstorage.extensions.persistentDataContainer
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import com.liamxsage.energeticstorage.extensions.sendSuccessSound
+import com.liamxsage.energeticstorage.model.Cable
 import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.DiskDrive
-import com.liamxsage.energeticstorage.model.Cable
 import com.liamxsage.energeticstorage.model.Terminal
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
 import com.liamxsage.energeticstorage.network.getNetworkInterface
+import com.liamxsage.energeticstorage.network.getNetworkInterfaceFromBlock
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -21,7 +22,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 class BlockBreakListener : Listener {
@@ -50,22 +50,23 @@ class BlockBreakListener : Listener {
 
         player.sendMessagePrefixed("Successfully removed ${
             networkInterfaceType.name.lowercase(Locale.getDefault())
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}.")
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }."
+        )
         player.sendSuccessSound()
     }
 
     private fun removeDiskDrive(block: Block, player: Player) {
         if (block.type != Material.CHISELED_BOOKSHELF) return
-        if (!block.persistentDataContainer.has(DISK_DRIVE_ID_NAMESPACE)) return
-        val systemUUID = block.persistentDataContainer[DISK_DRIVE_ID_NAMESPACE, PersistentDataType.STRING] ?: return
-        val system = DiskDriveCache.getDiskDriveByUUID(UUID.fromString(systemUUID)) ?: DiskDrive(UUID.fromString(systemUUID))
+        if (!block.persistentDataContainer.has(NETWORK_INTERFACE_ID_NAMESPACE)) return
+        val diskDrive = getNetworkInterfaceFromBlock<DiskDrive>(block)
 
-        for (drive in system.disks) {
+        for (drive in diskDrive.disks) {
             player.world.dropItemNaturally(block.location, drive.createDiskItem())
             drive.diskDriveUUID = null
             drive.saveToDB()
         }
-        system.disks.clear()
-        DiskDriveCache.addDiskDrive(system)
+        diskDrive.disks.clear()
+        NetworkInterfaceCache.addNetworkInterface(diskDrive)
     }
 }
