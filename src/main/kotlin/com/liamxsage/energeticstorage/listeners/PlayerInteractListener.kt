@@ -8,8 +8,10 @@ import com.liamxsage.energeticstorage.database.saveToDB
 import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.gui.DiskDriveGui
 import com.liamxsage.energeticstorage.model.DiskDrive
+import com.liamxsage.energeticstorage.model.Terminal
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
 import com.liamxsage.energeticstorage.network.getConnectedNetworkInterfaces
+import com.liamxsage.energeticstorage.network.getNetworkInterface
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -55,7 +57,23 @@ class PlayerInteractListener : Listener {
                 player
             )
 
-            NetworkInterfaceType.TERMINAL -> player.sendMessagePrefixed("Terminal")
+            NetworkInterfaceType.TERMINAL -> {
+                val terminal = getNetworkInterface(block) as? Terminal ?: return
+                if (terminal.connectedCore == null) {
+                    player.sendMessagePrefixed("This terminal is not connected to a core.")
+                    player.sendDeniedSound()
+                    return
+                }
+
+                player.sendMessageBlock(
+                    "Network Information",
+                    "Connected Terminals: ${terminal.connectedCore!!.connectedTerminals.size}",
+                    "Connected DiskDrives: ${terminal.connectedCore!!.connectedDiskDrives.size}",
+                    "Total Items: ${terminal.connectedCore!!.totalItems}/${terminal.connectedCore!!.totalSize}",
+                    "Total Types: ${terminal.connectedCore!!.totalTypes}/${terminal.connectedCore!!.totalTypesSize}",
+                    "Total Disks: ${terminal.connectedCore!!.totalDisks}/${terminal.connectedCore!!.connectedDiskDrives.size * 6}"
+                )
+            }
             else -> { /* Do nothing */
             }
         }

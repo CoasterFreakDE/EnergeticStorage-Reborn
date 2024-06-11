@@ -11,6 +11,8 @@ import org.bukkit.persistence.PersistentDataType
 
 class Terminal : NetworkInterface {
 
+    var connectedCore: Core? = null
+
     /**
      * Creates an ItemStack representing a terminal item for the Network.
      *

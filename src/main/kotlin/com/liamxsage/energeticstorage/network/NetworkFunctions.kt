@@ -3,16 +3,14 @@ package com.liamxsage.energeticstorage.network
 import com.liamxsage.energeticstorage.DISK_DRIVE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.MAX_NETWORK_LENGTH
 import com.liamxsage.energeticstorage.cache.DiskDriveCache
-import com.liamxsage.energeticstorage.extensions.getKey
-import com.liamxsage.energeticstorage.extensions.hasKey
-import com.liamxsage.energeticstorage.extensions.isNetworkInterface
-import com.liamxsage.energeticstorage.extensions.persistentDataContainer
+import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.model.Cable
 import com.liamxsage.energeticstorage.model.Terminal
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
@@ -56,6 +54,41 @@ fun getConnectedNetworkInterfaces(
     return connectedInterfaces
 }
 
+/**
+ * Updates the network core with the connected network interfaces.
+ *
+ * @param block The block to check for connected network interfaces.
+ */
+fun updateNetworkCoreWithConnectedInterfaces(block: Block, player: Player) {
+    val connectedInterfaces = getConnectedNetworkInterfaces(block)
+
+    if (connectedInterfaces.isEmpty()) return
+    val cores = connectedInterfaces.filter { it.value is Core }
+    if (cores.isEmpty()) return
+
+    assert(cores.size == 1) { "Multiple cores found in network." }
+
+    val core = cores.entries.first().value as Core
+    core.connectedDiskDrives.clear()
+    core.connectedTerminals.clear()
+
+    connectedInterfaces.forEach { (_, networkInterface) ->
+        when (networkInterface) {
+            is DiskDrive -> {
+                core.connectedDiskDrives.add(networkInterface)
+                player.sendMessagePrefixed("Connected disk drive to core.")
+                player.sendInfoSound()
+            }
+            is Terminal -> {
+                core.connectedTerminals.add(networkInterface)
+                networkInterface.connectedCore = core
+                player.sendMessagePrefixed("Connected terminal to core.")
+                player.sendInfoSound()
+            }
+            else -> { /* Do nothing */ }
+        }
+    }
+}
 
 
 /**

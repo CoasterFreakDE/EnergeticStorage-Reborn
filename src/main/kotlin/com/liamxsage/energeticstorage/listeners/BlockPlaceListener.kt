@@ -7,6 +7,7 @@ import com.liamxsage.energeticstorage.extensions.*
 import com.liamxsage.energeticstorage.model.DiskDrive
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
 import com.liamxsage.energeticstorage.network.getNetworkInterfaceType
+import com.liamxsage.energeticstorage.network.updateNetworkCoreWithConnectedInterfaces
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.type.ChiseledBookshelf
@@ -28,6 +29,15 @@ class BlockPlaceListener : Listener {
             placeDiskDrive(block, itemInHand)
         }
         block.persistentDataContainer[NETWORK_INTERFACE_NAMESPACE, PersistentDataType.BOOLEAN] = true
+
+        try {
+            updateNetworkCoreWithConnectedInterfaces(block, player)
+        } catch (e: AssertionError) {
+            player.sendMessagePrefixed("Multiple Cores detected. Please remove one.")
+            player.sendDeniedSound()
+            isCancelled = true
+            return
+        }
 
         player.sendMessagePrefixed("Successfully placed ${
             networkInterfaceType.name.lowercase(Locale.getDefault())
