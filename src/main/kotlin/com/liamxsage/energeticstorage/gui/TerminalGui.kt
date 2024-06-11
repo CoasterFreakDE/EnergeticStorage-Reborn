@@ -2,11 +2,13 @@ package com.liamxsage.energeticstorage.gui
 
 import com.liamxsage.energeticstorage.*
 import com.liamxsage.energeticstorage.database.saveToDB
+import com.liamxsage.energeticstorage.extensions.getLogger
 import com.liamxsage.energeticstorage.extensions.hasKey
 import com.liamxsage.energeticstorage.extensions.sendOpenSound
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import com.liamxsage.energeticstorage.model.Core
 import com.liamxsage.energeticstorage.model.SortOrder
+import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -117,11 +119,8 @@ class TerminalGui : InventoryHolder, Listener {
                 asAmount(min(item.amount, item.itemStackAsSingle.maxStackSize.toLong()).toInt())
                 addPersistentData(ITEM_AMOUNT_NAMESPACE, PersistentDataType.LONG, item.amount)
                 lore(
+                    *item.itemStackAsSingle.lore()?.map { it.asPlainString }?.toTypedArray() ?: emptyArray(),
                     "${TEXT_GRAY}Amount: <green>${item.amount}",
-                    "",
-                    "${TEXT_GRAY}Left-Click to get one,",
-                    "${TEXT_GRAY}Right-Click to get half (up to 32).",
-                    "${TEXT_GRAY}Shift-Click to get a full stack."
                 )
             }.build())
         }
@@ -272,6 +271,8 @@ class TerminalGui : InventoryHolder, Listener {
                     toRemoveStack.amount -= leftOver?.amount ?: 0
                 }
 
+                if (toRemoveStack.amount <= 0) return@with run { isCancelled = true }
+
                 core.removeItemFromSystem(toRemoveStack)
 
                 Bukkit.getScheduler().runTaskLater(EnergeticStorage.instance, Runnable {
@@ -282,7 +283,8 @@ class TerminalGui : InventoryHolder, Listener {
             in setOf(ClickType.OUT, ClickType.OUT_HALF) -> {
                 val takingItem = clickedItem.clone()
                 takingItem.amount =
-                    if ((clickType == ClickType.OUT_HALF && clickedItem.amount / 2 > 0)) clickedItem.amount / 2 else clickedItem.maxStackSize
+                    if ((clickType == ClickType.OUT_HALF && clickedItem.amount / 2 > 0)) clickedItem.amount / 2 else min(takingItem.amount, clickedItem.maxStackSize)
+
                 val addingESItem =
                     core.getFirstMatchingItem(clickedItem.clone()) ?: return@with run { isCancelled = true }
                 val addingItem = addingESItem.itemStackAsSingle.asQuantity(takingItem.amount)
@@ -295,7 +297,7 @@ class TerminalGui : InventoryHolder, Listener {
                 }, 1L)
             }
 
-            else -> return@with run { isCancelled = true }
+            else -> return@with
         }
     }
 

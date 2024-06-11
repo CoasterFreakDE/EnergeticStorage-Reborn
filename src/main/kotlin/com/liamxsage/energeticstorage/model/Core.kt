@@ -1,5 +1,6 @@
 package com.liamxsage.energeticstorage.model
 
+import com.liamxsage.energeticstorage.ITEM_AMOUNT_NAMESPACE
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_ID_NAMESPACE
 import com.liamxsage.energeticstorage.NETWORK_INTERFACE_NAMESPACE
 import com.liamxsage.energeticstorage.TEXT_GRAY
@@ -8,6 +9,7 @@ import com.liamxsage.energeticstorage.extensions.persistentDataContainer
 import com.liamxsage.energeticstorage.extensions.toItemBuilder
 import com.liamxsage.energeticstorage.network.NetworkInterface
 import com.liamxsage.energeticstorage.network.NetworkInterfaceType
+import dev.fruxz.stacked.extension.asPlainString
 import org.bukkit.block.Block
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -110,7 +112,22 @@ data class Core(
      * @return The first matching [ESItem] object representing the item, or null if no matching item is found.
      */
     fun getFirstMatchingItem(item: ItemStack): ESItem? {
-        return getAllDisksInSystem().flatMap { it.items }.find { it.itemStackAsSingle.isSimilar(item) }
+        return getAllDisksInSystem().flatMap { it.items }.find { it.itemStackAsSingle.isSimilar(getItemStackWithOutGuiModifications(item)) }
+    }
+
+    /**
+     * Returns an ItemStack without the amount identifier.
+     *
+     * @param item The input ItemStack.
+     * @return The modified ItemStack without the amount identifier.
+     */
+    private fun getItemStackWithOutGuiModifications(item: ItemStack): ItemStack {
+        return item.clone().toItemBuilder {
+            removePersistentData(ITEM_AMOUNT_NAMESPACE)
+            lore(
+                *item.lore()?.dropLast(1)?.map { it.asPlainString }?.toTypedArray() ?: emptyArray()
+            )
+        }.build()
     }
 
     /**
@@ -127,8 +144,8 @@ data class Core(
             if (remainingCapacity <= 0) continue
 
             val newItemStack = createNewItemStack(item)
-            disk.items.add(ESItem(newItemStack, remainingCapacity))
-            subtractItemAmount(item, remainingCapacity.toInt())
+            disk.items.add(ESItem(newItemStack, item.amount.toLong()))
+            subtractItemAmount(item, item.amount)
             if (item.amount <= 0) return true
         }
         return false
@@ -199,7 +216,7 @@ data class Core(
      */
     private fun removeExistingItemFromSystem(allDisks: List<Disk>, item: ItemStack): Boolean {
         for (disk in allDisks) {
-            val existingItem = disk.items.find { it.itemStackAsSingle.isSimilar(item) } ?: continue
+            val existingItem = disk.items.find { it.itemStackAsSingle.isSimilar(getItemStackWithOutGuiModifications(item)) } ?: continue
             if (existingItem.amount >= item.amount) {
                 existingItem.amount -= item.amount
                 if (existingItem.amount == 0L) {

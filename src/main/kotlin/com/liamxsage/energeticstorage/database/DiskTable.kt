@@ -31,11 +31,11 @@ object DiskTable : UUIDTable("energeticstorage_disks") {
 fun Disk.saveToDB() = transaction {
     DiskTable.replace {
         it[DiskTable.id] = this@saveToDB.uuid
-        it[DiskTable.diskDrive] = this@saveToDB.diskDriveUUID
-        it[DiskTable.size] = this@saveToDB.size
-        it[DiskTable.items] =
+        it[diskDrive] = this@saveToDB.diskDriveUUID
+        it[size] = this@saveToDB.size
+        it[items] =
             ExposedBlob(EnergeticStorage.instance.gson.toJson(this@saveToDB.items.toTypedArray()).toByteArray())
-        it[DiskTable.updatedAt] = Calendar.now().javaInstant
+        it[updatedAt] = Calendar.now().javaInstant
     }
 }
 

@@ -151,13 +151,23 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
     }
 
     /**
+     * Removes persistent data associated with the given key.
+     *
+     * @param key The namespaced key representing the data to be removed.
+     * @return An instance of ItemBuilder.
+     */
+    fun removePersistentData(key: NamespacedKey): ItemBuilder {
+        return removePersistentDataIf(key, true)
+    }
+
+    /**
      * Removes persistent data from the item if the condition is true.
      *
      * @param key the NamespacedKey used to identify the persistent data
      * @param condition the condition to check before removing the data (defaults to false)
      * @return the ItemBuilder with the persistent data removed (or unchanged if the condition is false)
      */
-    fun removePersistantDataIf(key: NamespacedKey, condition: Boolean = false): ItemBuilder {
+    fun removePersistentDataIf(key: NamespacedKey, condition: Boolean = false): ItemBuilder {
         if (condition) {
             val meta = itemStack.itemMeta
             meta.persistentDataContainer.remove(key)
