@@ -1,5 +1,6 @@
 package com.liamxsage.energeticstorage.commands
 
+import com.liamxsage.energeticstorage.GIVE_OTHERS_PERMISSION
 import com.liamxsage.energeticstorage.annotations.RegisterCommand
 import com.liamxsage.energeticstorage.extensions.sendMessagePrefixed
 import com.liamxsage.energeticstorage.extensions.sendSuccessSound
@@ -29,7 +30,7 @@ class ESGiveCommand : CommandExecutor, TabExecutor {
         }
 
         val item = args[0].lowercase(Locale.getDefault())
-        val player = if (args.size > 1) Bukkit.getPlayer(args[1]) else sender
+        val player = if (args.size > 1 && sender.hasPermission(GIVE_OTHERS_PERMISSION)) Bukkit.getPlayer(args[1]) else sender
 
         if (player !is Player) {
             sender.sendMessagePrefixed("<red>Only players can receive items")

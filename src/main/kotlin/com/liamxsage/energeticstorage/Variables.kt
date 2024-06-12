@@ -1,6 +1,8 @@
 package com.liamxsage.energeticstorage
 
 import org.bukkit.NamespacedKey
+import org.bukkit.permissions.Permission
+import org.bukkit.permissions.PermissionDefault
 
 const val PREFIX = "<gradient:#0984e3:#74b9ff>Energetic Storage</gradient> <color:#4a628f>>></color> <color:#b2c2d4>"
 const val BLOCK_PREFIX =
@@ -21,3 +23,7 @@ val GUI_FIXED_ITEM_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "gui_fix
 val PLAYER_DEBUG_MODE_NAMESPACE = NamespacedKey(EnergeticStorage.instance, "debug_mode")
 
 var MAX_NETWORK_LENGTH = 512
+
+
+// Permissions
+val GIVE_OTHERS_PERMISSION = Permission("energeticstorage.give.others", PermissionDefault.OP)

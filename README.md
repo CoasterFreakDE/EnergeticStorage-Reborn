@@ -54,31 +54,24 @@ If you run into any issues,
     * All drives have a type limit set at 64, 128, 256 or 512. This means that only this amount of different item types
       can be added to a single drive.
         * Can be changed in config.
-* ES System
-    * The ES System is what keeps the drives inside it and is used to access the items stored on the drives.
-    * You can trust players into the system; they will have just as much access as you do.
-        * Only the system owner can trust players.
-    * If you have Lands installed, you can trust areas to access the system.
-    * Public ES Systems:
-        * **_Anybody_** will have access to take items from the system.
-        * Only trusted players and the owner of the system can destroy it.
+* DiskDrive
+* Terminal
+* NetworkCore
+* Importer
+* Exporter
+* *More info coming soon*
 
 ## Permissions
 
-* `energeticstorage.*`: Gives all Energetic Storage permissions. Default: `op`
-* `energeticstorage.reload`: Gives permission to reload the Energetic Storage configuration files. Default: `op`
-* `energeticstorage.esgive`: Gives permission to give an Energetic Storage item to themselves. Default: `op`
-* `energeticstorage.esgive.others`: Gives permission to give an Energetic Storage item to others. Default: `op`
-* `energeticstorage.system.open.untrusted`: Gives permission to open an ES System that the player is not trusted on.
-  Default: `op`
-* `energeticstorage.system.create`: Gives permission to create an ES System. Default: `Everyone`
-* `energeticstorage.system.destroy.untrusted`: Gives permission to destroy a system the player isn't trusted on.
-  Default: `op`
+* `energeticstorage.give`: Gives permission to give an Energetic Storage item to themselves. Default: `op`
+* `energeticstorage.give.others`: Gives permission to give an Energetic Storage item to others. Default: `op`
+* `energeticstorage.debug`: Gives permission to toggle debug mode. Default: `op`
 
 ## Commands
 
-* /esreload
-* /esgive [1k, 4k, 16k, 64k, system] (player)
+* `/esdebug`: Toggles debug mode.
+* `/esgive <item> [player]` : Gives an Energetic Storage item to the player. If no player is specified, it gives it to the
+  command sender.
 
 ## Config:
 
