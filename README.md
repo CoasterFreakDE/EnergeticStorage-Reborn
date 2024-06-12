@@ -30,17 +30,19 @@ If you run into any issues,
 
 * [ ] Networking
     * [x] Cables (Data Transmissions)
-    * [ ] Network Cores
+    * [x] Network Cores
     * [x] DiskDrives
     * [x] Disks
-    * [ ] Terminals
-        * [ ] Terminal Sorting
+    * [x] Terminals
+        * [x] Terminal Sorting
+        * [ ] Terminal Search
     * [ ] Importer
         * [ ] Hopper Input
     * [ ] Exporter
     * [x] Configurable Network Length
 * [ ] Player/Region Whitelist
     * [ ] Lands Integration
+* [ ] Custom Recipes
 * [x] Support for 1.20.6
 * [x] MySQL, MariaDB, SQLite, PostgreSQL, and H2 support
 
